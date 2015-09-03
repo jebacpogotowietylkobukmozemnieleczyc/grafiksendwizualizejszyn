@@ -1,5 +1,6 @@
 #ifndef BULLET_HPP
 #define BULLET_HPP
+#include<memory>
 #include <btBulletDynamicsCommon.h>
 #include<DebugDrawer.h>
 #include "GameObject.h"
@@ -8,19 +9,18 @@ class Bullet
 public:
     Bullet();
 
-    void InitBullet();
-    void InitDebug();
-    void ClearBullet();
+    auto getWorld () {return world;}
+    //void InitBullet();
     void AddObject();
-    btDynamicsWorld* world;
 private:
     // core Bullet components
-    btBroadphaseInterface* broadphase;
-    btCollisionConfiguration* collisionconfiguration;
-    btCollisionDispatcher* dispatcher;
-    btConstraintSolver* solver;
+    std::unique_ptr<btCollisionConfiguration> collisionconfiguration;
+    std::unique_ptr<btCollisionDispatcher> dispatcher;
+    std::unique_ptr<btBroadphaseInterface> broadphase;
+    std::unique_ptr<btConstraintSolver> solver;
+    std::shared_ptr<btDynamicsWorld> world;
 
-    DebugDrawer* debugdrawer;
+    std::unique_ptr<DebugDrawer> debugdrawer;
     GameObject* gameobject;
 
 };

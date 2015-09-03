@@ -4,7 +4,6 @@
 //cubeVertices - tablica ze wspó³rzêdnymi wierzcho³ków.
 //cubeColors - tablica z kolorami wierzcho³ków
 //cubeVertexCount - liczba wierzcho³ków
-
 int cubeVertexCount=24;
 
 float cubeVertices[]={

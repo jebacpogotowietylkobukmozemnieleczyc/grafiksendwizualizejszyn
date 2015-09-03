@@ -1,51 +1,29 @@
 #include "bullet.hpp"
 
-Bullet::Bullet()
-{
 
-}
-
-void Bullet::InitBullet(){
+ Bullet::Bullet():
     // create the collision configuration
-    collisionconfiguration = new btDefaultCollisionConfiguration();
+    collisionconfiguration ( new btDefaultCollisionConfiguration()),
     // create the dispatcher
-    dispatcher = new btCollisionDispatcher(collisionconfiguration);
+    dispatcher ( new btCollisionDispatcher(collisionconfiguration.get())),
     // create the broadphase
-    broadphase = new btDbvtBroadphase();
+    broadphase ( new btDbvtBroadphase()),
     // create the constraint solver
-    solver = new btSequentialImpulseConstraintSolver();
+    solver ( new btSequentialImpulseConstraintSolver()),
     // create the world
-    world = new btDiscreteDynamicsWorld(dispatcher, broadphase,
-            solver, collisionconfiguration);
-
-}
-void Bullet::InitDebug(){
+    world ( new btDiscreteDynamicsWorld(dispatcher.get(), broadphase.get(),
+            solver.get(), collisionconfiguration.get())),
     // create the debug drawer
-    debugdrawer = new DebugDrawer();
+    debugdrawer ( new DebugDrawer())
+{
     // set the initial debug level to 0
     debugdrawer->setDebugMode(0);
     // add the debug drawer to the world
-    world->setDebugDrawer(debugdrawer);
+    world->setDebugDrawer(debugdrawer.get());
 
         debugdrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb);
 }
 
-void Bullet::ClearBullet(){
-     // create the collision configuration
-    delete collisionconfiguration ;
-    // create the dispatcher
-    delete dispatcher;
-    // create the broadphase
-    delete broadphase;
-    // create the constraint solver
-    delete solver;
-    // create the world
-    delete world;
-
-   delete debugdrawer;
-
-    delete gameobject;
-}
 
 void Bullet::AddObject(){
 
