@@ -19,16 +19,30 @@ public:
 
  void DisplayFrame(void) ;
  void NextFrame(void) ;
- void KeyDown(int c, int x, int y) ;
-void KeyUp(int c, int x, int y) ;
+ void KeySpecialDown(int c, int x, int y) ;
+void KeySpecialUp(int c, int x, int y) ;
+ void KeyDown(unsigned char c, int x, int y) ;
+void KeyUp(unsigned char c, int x, int y) ;
 
 private:
- float speed_x=0;
- float speed_y=0;
+ float activatedpitch=0;
+ float activatedyaw=0;
  int lastTime=0;
- float angle_x;
- float angle_y;
+ float yaw =90;
+ float pitch =0 ;
+ float mousesensivity=60;
+ float speed =1;
+ float moveforward=0;
+ float turn=0;
  Bullet  bullet;
+
+
+    glm::vec3 cameraposition =
+        glm::vec3(0.0f,0.0f,-25.0f);
+    glm::vec3 cameratarget =
+        glm::vec3(1.0f,1.0f,1.0f);
+    glm::vec3 cameraup =
+        glm::vec3(0.0f,1.0f,0.0f);
 };
 
 extern App *app;
