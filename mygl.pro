@@ -9,7 +9,8 @@ SOURCES += main.cpp tga.cpp detailed_cube.cpp \
     bullet.cpp \
     DebugDrawer.cpp \
     GameObject.cpp \
-    app.cpp
+    app.cpp \
+    level.cpp
 INCLUDEPATH += /usr/include/bullet
 LIBS += -lGL -lglut -lGLEW -lBulletDynamics -lBulletCollision -lLinearMath
 
@@ -17,4 +18,5 @@ HEADERS += \
     bullet.hpp \
     DebugDrawer.h \
     GameObject.h \
-    app.hpp
+    app.hpp \
+    level.hpp

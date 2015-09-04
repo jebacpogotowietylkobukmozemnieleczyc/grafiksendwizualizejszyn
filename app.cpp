@@ -82,7 +82,8 @@ static void KeySpecialUpCallback(int c, int x, int y) {
     app->KeySpecialUp(c,x,y);
 }
 
-App::App(int* argc,char** argv)
+GLuint tex;
+App::App(int* argc,char** argv):level(NULL,4,-4,-4,4,4,16,16)
 {
 
     glutInit(argc, argv);
@@ -102,12 +103,9 @@ App::App(int* argc,char** argv)
 	
 	
     glEnable(GL_DEPTH_TEST);
-
     bullet.AddObject();
 }
 
-
-GLuint tex;
 
 void App::DisplayFrame(void) {
 	glClearColor(0,0,0,1);
@@ -115,8 +113,8 @@ void App::DisplayFrame(void) {
 
     //world->stepSimulation(1);
     glm::mat4 M;
-    std::cout <<  "<--" << cameraposition.x << ' ' << ' ' << cameraposition.y << ' ' << cameraposition.z << std::endl;
-    std::cout << cameraposition.x << ' ' << ' ' << cameraposition.y << ' ' << cameraposition.z << std::endl;
+   // std::cout <<  "<--" << cameraposition.x << ' ' << ' ' << cameraposition.y << ' ' << cameraposition.z << std::endl;
+    //std::cout << cameraposition.x << ' ' << ' ' << cameraposition.y << ' ' << cameraposition.z << std::endl;
     glm::mat4 V=glm::lookAt(
                 cameraposition,
                 cameraposition + cameratarget,
@@ -130,10 +128,8 @@ void App::DisplayFrame(void) {
 	
 		
 	M=glm::mat4(1.0f);
-    //M=glm::rotate(M,yaw,glm::vec3(0.0f,1.0f,0.0f));
-    //M=glm::rotate(M,pitch,glm::vec3(1.0f,0.0f,0.0f));
 	glLoadMatrixf(glm::value_ptr(V*M));
-
+/*
 	glEnableClientState(GL_VERTEX_ARRAY);	
 	glEnableClientState(GL_COLOR_ARRAY);
 
@@ -143,7 +139,8 @@ void App::DisplayFrame(void) {
 	glDrawArrays(GL_QUADS,0,cubeVertexCount);
     glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
-
+*/
+    level.DrawLevel();
     bullet.getWorld()->debugDrawWorld();
 	glutSwapBuffers();
 }
