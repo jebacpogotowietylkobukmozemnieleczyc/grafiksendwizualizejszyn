@@ -53,17 +53,21 @@ float stepz = (endz - startz) / divz;
     }
 
     std::cout << "^^start";
-for(std::vector<float>::iterator it  = getVec().begin(); it != getVec().end(); ++it) {
+for(auto it  = getVec().begin(); it != getVec().end(); ++it) {
     std::cout << *it << " ";
 }
     }
 
     void Level::DrawLevel(){
 
+        std::vector<float> inverse;
+        for(auto it = vec.begin();it!=vec.end();++it){
+            inverse.push_back( -(*(it)) );
+        }
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
 
-    glVertexPointer(3,GL_FLOAT,0,vec.data());
+    glVertexPointer(3,GL_FLOAT,0,inverse.data());
     glColorPointer(3,GL_FLOAT,0,veccolor.data());
 
     glDrawElements(GL_QUADS,vecind.size(),GL_UNSIGNED_INT,vecind.data());

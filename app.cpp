@@ -45,7 +45,7 @@ App::App(int* argc,char** argv)
     glEnable(GL_DEPTH_TEST);
 
     std::cout << "<<start";
-for(std::vector<float>::iterator it  = bullet.level.getVec().begin(); it != bullet.level.getVec().end(); ++it) {
+for(auto it  = bullet.level.getVec().begin(); it != bullet.level.getVec().end(); ++it) {
     std::cout << *it << " ";
 }
 std::cout << std::endl;
@@ -53,7 +53,7 @@ std::cout << std::endl;
     bullet.AddLevel();
 
     std::cout << ">>start ";
-for(std::vector<float>::iterator it  = bullet.level.getVec().begin(); it != bullet.level.getVec().end(); ++it) {
+for(auto it  = bullet.level.getVec().begin(); it != bullet.level.getVec().end(); ++it) {
     std::cout << *(it) << " ";
 }
 std::cout << std::endl;
@@ -93,14 +93,23 @@ void App::DisplayFrame(void) {
 	glDisableClientState(GL_COLOR_ARRAY);
 */
 
+    btTransform trans;
+    bullet.levelobject->GetRigidBody()->getMotionState()->getWorldTransform(trans);
+    M=glm::mat4(1.0f);
+    M=glm::translate(M,glm::vec3(trans.getOrigin().getX(),trans.getOrigin().getY(),trans.getOrigin().getZ() ) );
     bullet.getLevel().DrawLevel();
     bullet.getWorld()->debugDrawWorld();
-    btTransform trans;
     bullet.gameobject->GetRigidBody()->getMotionState()->getWorldTransform(trans);
     M=glm::mat4(1.0f);
     M=glm::translate(M,glm::vec3(trans.getOrigin().getX(),trans.getOrigin().getY(),trans.getOrigin().getZ() ) );
     glLoadMatrixf(glm::value_ptr(V*M));
     glutSolidSphere(2,20,20);
+
+    M=glm::mat4(1.0f);
+    M=glm::translate(M,glm::vec3(0.0f,20.0f,0.0f) );
+    glLoadMatrixf(glm::value_ptr(V*M));
+    glutSolidSphere(2,20,20);
+
     glutSwapBuffers();
 
 }

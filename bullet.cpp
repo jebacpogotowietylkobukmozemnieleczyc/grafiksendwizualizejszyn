@@ -16,7 +16,7 @@
             solver.get(), collisionconfiguration.get())),
     // create the debug drawer
     debugdrawer ( new DebugDrawer()),
-  level(NULL,4,-4,-4,4,4,1,1)
+  level(NULL,4,-10,-10,10,10,8,8)
 {
      world->setGravity(btVector3(0,10 , 0));
     // set the initial debug level to 0
@@ -45,30 +45,43 @@ void Bullet::AddLevel(){
        //convexhullshape->addPoint(newpoint2);
 }
     */
-    std::cout << "start ";
-for(std::vector<float>::iterator it  = level.getVec().begin(); it != level.getVec().end(); ++it) {
-    std::cout << *(it) << " ";
-}
-std::cout << std::endl;
     btTriangleMesh * mesh = new btTriangleMesh;
+    int v =0;
+    int x =0;
+    int z = 0;
     for(auto it = level.getVec().begin(); it != level.getVec().end(); it+=3) {
-        if(*(it)>=level.getDivx() || *(it+2)>=level.getDivz())continue;
+        if(x>=level.getDivx()){
+            ++z;
+            x=0;
+            continue;
+        }
+        if(z>=level.getDivz())break;
+        //if(*(it)>=level.getDivx() || *(it+2)>=level.getDivz())continue;
         btVector3 newpoint(*(it),*(it+1),*(it+2));
-        btVector3 newpoint2(*(it+(3*(level.getDivx()+1))),*(it+(3*(level.getDivx()+1))+1),*(it+(3*(level.getDivx()+2))));
+        btVector3 newpoint2(*(it+(3*(level.getDivx()+1))),*(it+(3*(level.getDivx()+1))+1),*(it+(3*(level.getDivx()+1))+2));
         btVector3 newpoint3(*(it+3),*(it+4),*(it+5));
         mesh->addTriangle(newpoint,newpoint2,newpoint3);
-        std::cout << "Mesh: " << newpoint.x() << " "<< newpoint.y() << " "<< newpoint.z() <<std::endl;
-        std::cout << "Mesh: " << newpoint2.x() << " "<< newpoint2.y() << " "<< newpoint2.z() <<std::endl;
-        std::cout << "Mesh: " << newpoint3.x() << " "<< newpoint3.y() << " "<< newpoint3.z() <<std::endl;
+        std::cout << ++v << "Mesh: " << newpoint.x() << " "<< newpoint.y() << " "<< newpoint.z() <<std::endl;
+        std::cout << ++v << "Mesh: " << newpoint2.x() << " "<< newpoint2.y() << " "<< newpoint2.z() <<std::endl;
+        std::cout << ++v << "Mesh: " << newpoint3.x() << " "<< newpoint3.y() << " "<< newpoint3.z() <<std::endl;
 
         btVector3 newpoint4(*(it+3),*(it+4),*(it+5));
         btVector3 newpoint5(*(it+(3*(level.getDivx()+1))),*(it+(3*(level.getDivx()+1))+1),*(it+(3*(level.getDivx()+1))+2));
         btVector3 newpoint6(*(it+(3*(level.getDivx()+1))+3),*(it+(3*(level.getDivx()+1))+4),*(it+(3*(level.getDivx()+1))+5));
         mesh->addTriangle(newpoint4,newpoint5,newpoint6);
-        std::cout << "Mesh: " << newpoint4.x() << " "<< newpoint4.y() << " "<< newpoint4.z() <<std::endl;
-        std::cout << "Mesh: " << newpoint5.x() << " "<< newpoint5.y() << " "<< newpoint5.z() <<std::endl;
-        std::cout << "Mesh: " << newpoint6.x() << " "<< newpoint6.y() << " "<< newpoint6.z() <<std::endl;
+        std::cout << ++v << "Mesh: " << newpoint4.x() << " "<< newpoint4.y() << " "<< newpoint4.z() <<std::endl;
+        std::cout << ++v << "Mesh: " << newpoint5.x() << " "<< newpoint5.y() << " "<< newpoint5.z() <<std::endl;
+        std::cout << ++v << "Mesh: " << newpoint6.x() << " "<< newpoint6.y() << " "<< newpoint6.z() <<std::endl;
+        ++x;
+
     }
+    int  xd= 0;
+    std::cout << "start ";
+for(auto it  = level.getVec().begin(); it != level.getVec().end(); ++it) {
+    //std::cout << *(it) << " ";
+    xd++;
+}
+std::cout << std::endl << "YOYOYOYOYO" << xd << std::endl;
     /*
     for(auto it = level.getVec().begin(); it != level.getVec().end(); it+=3) {
         if(*(it)>=level.getDivx() || *(it+2)>=level.getDivz())continue;
