@@ -10,7 +10,6 @@
 #include "tga.h"
 
 #include "bullet.hpp"
-#include "level.hpp"
 class App
 {
 public:
@@ -35,7 +34,6 @@ private:
  float moveforward=0;
  float turn=0;
  Bullet  bullet;
-Level level;
 
     glm::vec3 cameraposition =
         glm::vec3(0.0f,0.0f,-25.0f);

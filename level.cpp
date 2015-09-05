@@ -32,10 +32,10 @@ float stepz = (endz - startz) / divz;
            int x =startx + j*stepx;
            int z =startz + i * stepz;
            vec.push_back(x);
-           vec.push_back(t*(cos(glm::radians(static_cast<float>(x*15)))+sin(glm::radians(static_cast<float>(z*15)))));
+           vec.push_back(t*(cos(glm::radians(static_cast<float>(x*15)))+sin(glm::radians(static_cast<float>(z*15))))-2.0);
            //vec.push_back(t*(cos(degtrad(x*15))+sin(degtrad(z*15))));
            vec.push_back(z);
-           std::cout <<  startx + j*stepx<< ' ' << -1  << ' ' << startz + i * stepz << std::endl;
+           std::cout <<  x<< ' ' << -1  << ' ' << z<< std::endl;
 
            if(i<divz && j < divx){
            vecind.push_back(v);
@@ -51,6 +51,11 @@ float stepz = (endz - startz) / divz;
            ++v;
         }
     }
+
+    std::cout << "^^start";
+for(std::vector<float>::iterator it  = getVec().begin(); it != getVec().end(); ++it) {
+    std::cout << *it << " ";
+}
     }
 
     void Level::DrawLevel(){

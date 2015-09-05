@@ -4,15 +4,19 @@
 #include <btBulletDynamicsCommon.h>
 #include<DebugDrawer.h>
 #include "GameObject.h"
+#include "level.hpp"
 class Bullet
 {
 public:
     Bullet();
 
+~Bullet();
     auto getWorld () {return world;}
+    auto getLevel () {return level;}
     //void InitBullet();
     void AddObject();
-private:
+    void AddLevel();
+//private:
     // core Bullet components
     std::unique_ptr<btCollisionConfiguration> collisionconfiguration;
     std::unique_ptr<btCollisionDispatcher> dispatcher;
@@ -22,6 +26,8 @@ private:
 
     std::unique_ptr<DebugDrawer> debugdrawer;
     GameObject* gameobject;
+    GameObject* levelobject;
+Level level;
 
 };
 

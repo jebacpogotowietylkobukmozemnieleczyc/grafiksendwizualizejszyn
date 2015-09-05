@@ -16,6 +16,9 @@ public:
 
 
     void DrawLevel();
+    const std::vector<float>& getVec() const{return vec;}
+    auto getDivx() {return divx;}
+    auto getDivz() {return divz;}
 private:
 float startx = -20;
 float startz = -20;

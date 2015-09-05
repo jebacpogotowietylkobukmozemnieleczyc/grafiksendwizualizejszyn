@@ -1,64 +1,4 @@
 #include "app.hpp"
-
-int cubeVertexCount=24;
-
-float cubeVertices[]={
-    -1,-1,-1,
-    -1, 1,-1,
-     1, 1,-1,
-     1,-1,-1,
-
-    -1,-1, 1,
-    -1, 1, 1,
-     1, 1, 1,
-     1,-1, 1,
-
-    -1,-1,-1,
-    -1,-1, 1,
-     1,-1, 1,
-     1,-1,-1,
-
-    -1, 1,-1,
-    -1, 1, 1,
-     1, 1, 1,
-     1, 1,-1,
-
-    -1,-1,-1,
-    -1,-1, 1,
-    -1, 1, 1,
-    -1, 1,-1,
-
-     1,-1,-1,
-     1,-1, 1,
-     1, 1, 1,
-     1, 1,-1
-};
-
-
-float cubeColors[]={
-    1,0,0, 1,0,0, 1,0,0, 1,0,0,
-    0,1,0, 0,1,0, 0,1,0, 0,1,0,
-    0,0,1, 0,0,1, 0,0,1, 0,0,1,
-    1,1,0, 1,1,0, 1,1,0, 1,1,0,
-    0,1,1, 0,1,1, 0,1,1, 0,1,1,
-    1,1,1, 1,1,1, 1,1,1, 1,1,1
-};
-
-auto rotx(glm::vec3 v, double a)
-{
-    return glm::vec3(v.x, v.y*cos(a) - v.z*sin(a), v.y*sin(a) + v.z*cos(a));
-}
-
-auto roty(glm::vec3 v, double a)
-{
-    return glm::vec3(v.x*cos(a) + v.z*sin(a), v.y, -v.x*sin(a) + v.z*cos(a));
-}
-
-auto rotz(glm::vec3 v, double a)
-{
-    return glm::vec3(v.x*cos(a) - v.y*sin(a), v.x*sin(a) + v.y*cos(a), v.z);
-}
-
  App *app;
 static void DisplayFrameCallback(void) {
     app->DisplayFrame();
@@ -83,7 +23,7 @@ static void KeySpecialUpCallback(int c, int x, int y) {
 }
 
 GLuint tex;
-App::App(int* argc,char** argv):level(NULL,4,-4,-4,4,4,16,16)
+App::App(int* argc,char** argv)
 {
 
     glutInit(argc, argv);
@@ -103,7 +43,20 @@ App::App(int* argc,char** argv):level(NULL,4,-4,-4,4,4,16,16)
 	
 	
     glEnable(GL_DEPTH_TEST);
-    bullet.AddObject();
+
+    std::cout << "<<start";
+for(std::vector<float>::iterator it  = bullet.level.getVec().begin(); it != bullet.level.getVec().end(); ++it) {
+    std::cout << *it << " ";
+}
+std::cout << std::endl;
+    //bullet.AddObject();
+    bullet.AddLevel();
+
+    std::cout << ">>start ";
+for(std::vector<float>::iterator it  = bullet.level.getVec().begin(); it != bullet.level.getVec().end(); ++it) {
+    std::cout << *(it) << " ";
+}
+std::cout << std::endl;
 }
 
 
@@ -111,22 +64,21 @@ void App::DisplayFrame(void) {
 	glClearColor(0,0,0,1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //world->stepSimulation(1);
+    bullet.world->stepSimulation(1);
     glm::mat4 M;
    // std::cout <<  "<--" << cameraposition.x << ' ' << ' ' << cameraposition.y << ' ' << cameraposition.z << std::endl;
     //std::cout << cameraposition.x << ' ' << ' ' << cameraposition.y << ' ' << cameraposition.z << std::endl;
     glm::mat4 V=glm::lookAt(
                 cameraposition,
                 cameraposition + cameratarget,
-		glm::vec3(0.0f,1.0f,0.0f));
-	
-	glm::mat4 P=glm::perspective(50.0f, 1.0f, 1.0f, 50.0f);
-	
+        glm::vec3(0.0f,1.0f,0.0f));
+
+    glm::mat4 P=glm::perspective(50.0f, 1.0f, 1.0f, 500.0f);
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(glm::value_ptr(P));
 	glMatrixMode(GL_MODELVIEW);
-	
-		
+
 	M=glm::mat4(1.0f);
 	glLoadMatrixf(glm::value_ptr(V*M));
 /*
@@ -140,9 +92,17 @@ void App::DisplayFrame(void) {
     glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 */
-    level.DrawLevel();
+
+    bullet.getLevel().DrawLevel();
     bullet.getWorld()->debugDrawWorld();
-	glutSwapBuffers();
+    btTransform trans;
+    bullet.gameobject->GetRigidBody()->getMotionState()->getWorldTransform(trans);
+    M=glm::mat4(1.0f);
+    M=glm::translate(M,glm::vec3(trans.getOrigin().getX(),trans.getOrigin().getY(),trans.getOrigin().getZ() ) );
+    glLoadMatrixf(glm::value_ptr(V*M));
+    glutSolidSphere(2,20,20);
+    glutSwapBuffers();
+
 }
 
 
