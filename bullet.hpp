@@ -3,6 +3,7 @@
 #include<memory>
 #include <btBulletDynamicsCommon.h>
 #include<DebugDrawer.h>
+#include <GL/glut.h>
 #include "GameObject.h"
 #include "level.hpp"
 class Bullet
@@ -15,6 +16,11 @@ public:
     auto getLevel () {return level;}
     //void InitBullet();
     void AddObject();
+void AddObject(std::function<void()> drawfunction,btCollisionShape* pShape, float mass,
+        const btVector3 &color, const btVector3 &initialPosition,
+        const btQuaternion &initialRotation,
+                       float speed,
+                       const btVector3 &direction);
     void AddLevel();
 //private:
     // core Bullet components
@@ -25,7 +31,7 @@ public:
     std::shared_ptr<btDynamicsWorld> world;
 
     std::unique_ptr<DebugDrawer> debugdrawer;
-    GameObject* gameobject;
+    std::vector<std::unique_ptr<GameObject> > gameobject;
     GameObject* levelobject;
 Level level;
 

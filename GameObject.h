@@ -4,11 +4,12 @@
 #include <btBulletDynamicsCommon.h>
 
 #include "OpenGLMotionState.h"
+#include <functional>
 
 class GameObject
 {
 public:
-	GameObject(btCollisionShape* pShape, float mass, const btVector3 &color,
+    GameObject(std::function<void()> drawfunction,btCollisionShape* pShape, float mass, const btVector3 &color,
 			const btVector3 &initialPosition = btVector3(0, 0, 0),
             const btQuaternion &initialRotation = btQuaternion(1, 0, 0, 0));
 	~GameObject();
@@ -29,11 +30,11 @@ public:
 		return m_pMotionState;
 	}
 
-	void GetTransform(btScalar* transform)
+    void GetTransform(btTransform& trans)
 	{
-		if (m_pMotionState)
-			m_pMotionState->GetWorldTransform(transform);
-	}
+
+    m_pBody->getMotionState()->getWorldTransform(trans);
+    }
 
 	btVector3 GetColor()
 	{
@@ -45,10 +46,15 @@ public:
 		m_color = color;
 	}
 
+void DrawShape(){
+    drawfunction();
+}
 protected:
-	btCollisionShape* m_pShape;
+std::function<void()> drawfunction;
+    btCollisionShape* m_pShape;
 	btRigidBody* m_pBody;
-	OpenGLMotionState* m_pMotionState;
+    btDefaultMotionState* m_pMotionState;
 	btVector3 m_color;
+    btTriangleMesh * mesh;
 };
 #endif

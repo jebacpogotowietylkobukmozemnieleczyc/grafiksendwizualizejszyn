@@ -1,14 +1,12 @@
 #include "GameObject.h"
-GameObject::GameObject(btCollisionShape* pShape, float mass,
+GameObject::GameObject(std::function<void()> drawfunction,btCollisionShape* pShape, float mass,
 		const btVector3 &color, const btVector3 &initialPosition,
-		const btQuaternion &initialRotation)
+        const btQuaternion &initialRotation):
+    drawfunction(drawfunction),
+    m_pShape ( pShape),
+    m_color ( color),
+    mesh(nullptr)
 {
-	// store the shape for later usage
-	m_pShape = pShape;
-
-	// store the color
-	m_color = color;
-
 	// create the initial transform
 	btTransform transform;
 	transform.setIdentity();
@@ -17,7 +15,7 @@ GameObject::GameObject(btCollisionShape* pShape, float mass,
 
 	// create the motion state from the
 	// initial transform
-	m_pMotionState = new OpenGLMotionState(transform);
+    m_pMotionState = new btDefaultMotionState(transform);
 
 	// calculate the local inertia
 	btVector3 localInertia(0, 0, 0);
@@ -42,4 +40,6 @@ GameObject::~GameObject()
 	delete m_pBody;
 	delete m_pMotionState;
 	delete m_pShape;
+    if(mesh!=nullptr)
+delete mesh;
 }

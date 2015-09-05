@@ -93,23 +93,17 @@ void App::DisplayFrame(void) {
 	glDisableClientState(GL_COLOR_ARRAY);
 */
 
-    btTransform trans;
-    bullet.levelobject->GetRigidBody()->getMotionState()->getWorldTransform(trans);
-    M=glm::mat4(1.0f);
-    M=glm::translate(M,glm::vec3(trans.getOrigin().getX(),trans.getOrigin().getY(),trans.getOrigin().getZ() ) );
-    bullet.getLevel().DrawLevel();
+    //bullet.gameobject->GetRigidBody()->getMotionState()->getWorldTransform(trans);
     bullet.getWorld()->debugDrawWorld();
-    bullet.gameobject->GetRigidBody()->getMotionState()->getWorldTransform(trans);
+for(auto it = bullet.gameobject.begin();it!=bullet.gameobject.end();++it){
+
+    btTransform trans;
+    (*it)->GetTransform(trans);
     M=glm::mat4(1.0f);
     M=glm::translate(M,glm::vec3(trans.getOrigin().getX(),trans.getOrigin().getY(),trans.getOrigin().getZ() ) );
     glLoadMatrixf(glm::value_ptr(V*M));
-    glutSolidSphere(2,20,20);
-
-    M=glm::mat4(1.0f);
-    M=glm::translate(M,glm::vec3(0.0f,20.0f,0.0f) );
-    glLoadMatrixf(glm::value_ptr(V*M));
-    glutSolidSphere(2,20,20);
-
+(*it)->DrawShape();
+}
     glutSwapBuffers();
 
 }
@@ -186,6 +180,12 @@ void App::KeyUp(unsigned char c, int x, int y) {
       break;
     case 'd':
       turn=-0;
+      break;
+  case 'h':
+    bullet.AddObject(
+                       [](){glutSolidSphere(2,20,20);},
+                                              new btBoxShape(btVector3(2, 2, 3)), 1,
+                                   btVector3(0.2f, 0.6f, 0.6f), btVector3(cameraposition.x, cameraposition.y,cameraposition.z) ,btQuaternion(1.0f,0.0f,0.0f,0.0f),252.0f, btVector3(cameratarget.x,cameratarget.y,cameratarget.z));
       break;
   }
 }

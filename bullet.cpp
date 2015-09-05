@@ -16,7 +16,7 @@
             solver.get(), collisionconfiguration.get())),
     // create the debug drawer
     debugdrawer ( new DebugDrawer()),
-  level(NULL,4,-10,-10,10,10,8,8)
+  level(NULL,4,-10,-10,10,20,8,8)
 {
      world->setGravity(btVector3(0,10 , 0));
     // set the initial debug level to 0
@@ -28,11 +28,30 @@
 }
 
 
-void Bullet::AddObject(){
+void Bullet::AddObject(std::function<void()> drawfunction,btCollisionShape* pShape, float mass,
+        const btVector3 &color, const btVector3 &initialPosition,
+        const btQuaternion &initialRotation,
+                       float speed,
+                       const btVector3 &direction){
+      std::unique_ptr<GameObject> temp(new GameObject(
+                                           drawfunction,
+                 pShape, mass,color,
+            initialPosition,initialRotation) );
+     world->addRigidBody( temp->GetRigidBody() );
 
-     gameobject= new GameObject(new btBoxShape(btVector3(2, 2, 3)), 0,
-            btVector3(0.2f, 0.6f, 0.6f), btVector3(0.0f, 0.0f, 0.0f));
-        world->addRigidBody(gameobject->GetRigidBody());
+    if(speed!=0){
+
+    btVector3 velocity = direction;
+    velocity.normalize();
+    velocity *= speed;
+
+    // set the linear velocity of the box
+    temp->GetRigidBody()->setLinearVelocity(velocity);
+    }
+     gameobject.push_back( std::move(temp) );
+     //gameobject= new GameObject(new btBoxShape(btVector3(2, 2, 3)), 0,
+      //      btVector3(0.2f, 0.6f, 0.6f), btVector3(0.0f, 0.0f, 0.0f));
+       // world->addRigidBody(gameobject->GetRigidBody());
 }
 
 void Bullet::AddLevel(){
@@ -104,18 +123,19 @@ std::cout << std::endl << "YOYOYOYOYO" << xd << std::endl;
     */
     btBvhTriangleMeshShape* convexhullshape = new btBvhTriangleMeshShape(mesh,true);
 
-     levelobject= new GameObject(convexhullshape, 0,
-            btVector3(0.0f, 0.0f, 0.0f), btVector3(0.0f, 0.0f, 0.0f));
-        world->addRigidBody(levelobject->GetRigidBody());
-     gameobject= new GameObject(new btBoxShape(btVector3(2, 2, 3)), 1,
-            btVector3(0.2f, 0.6f, 0.6f), btVector3(0.0f, -100.0f, 0.0f));
-        world->addRigidBody(gameobject->GetRigidBody());
-//delete mesh;
+    AddObject(
+                 [&](){level.DrawLevel();}
+                 ,convexhullshape, 0,
+            btVector3(0.0f, 0.0f, 0.0f), btVector3(0.0f, 0.0f, 0.0f),btQuaternion(1.0f,0.0f,0.0f,0.0f),0.0f,btVector3(0.0f, 0.0f, 0.0f) );
+
+    AddObject(
+                       [](){glutSolidSphere(2,20,20);},
+                                              new btBoxShape(btVector3(2, 2, 3)), 1,
+                                   btVector3(0.2f, 0.6f, 0.6f), btVector3(0.0f, -100.0f, 0.0f) ,btQuaternion(1.0f,0.0f,0.0f,0.0f),0.0f, btVector3(0.0f, 0.0f, 0.0f));
 }
 
 
 Bullet::~Bullet(){
-    delete gameobject;
     delete levelobject;
 
 }
