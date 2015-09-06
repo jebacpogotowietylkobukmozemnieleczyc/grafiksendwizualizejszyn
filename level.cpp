@@ -67,7 +67,7 @@ for(auto it  = getVec().begin(); it != getVec().end(); ++it) {
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
 
-    glVertexPointer(3,GL_FLOAT,0,inverse.data());
+    glVertexPointer(3,GL_FLOAT,0,vec.data());
     glColorPointer(3,GL_FLOAT,0,veccolor.data());
 
     glDrawElements(GL_QUADS,vecind.size(),GL_UNSIGNED_INT,vecind.data());

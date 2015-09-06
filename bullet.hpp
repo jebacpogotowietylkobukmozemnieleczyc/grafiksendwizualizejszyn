@@ -6,6 +6,7 @@
 #include <GL/glut.h>
 #include "GameObject.h"
 #include "level.hpp"
+enum class ShapeType {LEVEL,SPHERE,CUBE,CONE,TEAPOT};
 class Bullet
 {
 public:
@@ -14,14 +15,16 @@ public:
 ~Bullet();
     auto getWorld () {return world;}
     auto getLevel () {return level;}
+void     setShapetype (ShapeType nshapetype) {shapetype=nshapetype;}
     //void InitBullet();
     void AddObject();
-void AddObject(std::function<void()> drawfunction,btCollisionShape* pShape, float mass,
+void AddObject(btCollisionShape* pShape, float mass,
         const btVector3 &color, const btVector3 &initialPosition,
         const btQuaternion &initialRotation,
                        float speed,
                        const btVector3 &direction);
     void AddLevel();
+
 //private:
     // core Bullet components
     std::unique_ptr<btCollisionConfiguration> collisionconfiguration;
@@ -35,6 +38,7 @@ void AddObject(std::function<void()> drawfunction,btCollisionShape* pShape, floa
     GameObject* levelobject;
 Level level;
 
+ShapeType shapetype;
 };
 
 #endif // BULLET_HPP
