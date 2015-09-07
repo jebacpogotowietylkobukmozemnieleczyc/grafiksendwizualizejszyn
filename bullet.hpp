@@ -6,6 +6,7 @@
 #include <GL/glut.h>
 #include "GameObject.h"
 #include "level.hpp"
+#include "solidsphere.hpp"
 enum class ShapeType {LEVEL,SPHERE,CUBE,CONE,TEAPOT};
 class Bullet
 {
@@ -37,7 +38,7 @@ void AddObject(btCollisionShape* pShape, float mass,
     std::vector<std::unique_ptr<GameObject> > gameobject;
     GameObject* levelobject;
 Level level;
-
+SolidSphere solidsphere;
 ShapeType shapetype;
 };
 

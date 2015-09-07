@@ -19,4 +19,6 @@ HEADERS += \
     DebugDrawer.h \
     GameObject.h \
     app.hpp \
-    level.hpp
+    level.hpp \
+    solidsphere.hpp \
+    tga.h

@@ -16,7 +16,9 @@ Bullet::Bullet()
                                         collisionconfiguration.get())),
       // create the debug drawer
       debugdrawer(new DebugDrawer()),
-      level(NULL, 4, -10, -10, 10, 20, 8, 8) {
+      level(NULL, 4, -10, -10, 10, 20, 8, 8) ,
+solidsphere(4,12,14)
+{
   world->setGravity(btVector3(0, 10, 0));
   // set the initial debug level to 0
   debugdrawer->setDebugMode(0);

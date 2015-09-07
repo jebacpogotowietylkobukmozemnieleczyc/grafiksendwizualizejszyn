@@ -14,6 +14,7 @@ class App
 {
 public:
     App(int* argc,char** argv);
+    ~App();
 
 
  void DisplayFrame(void) ;
@@ -22,7 +23,7 @@ public:
 void KeySpecialUp(int c, int x, int y) ;
  void KeyDown(unsigned char c, int x, int y) ;
 void KeyUp(unsigned char c, int x, int y) ;
-
+void LoadTexture();
 private:
  float activatedpitch=0;
  float activatedyaw=0;
@@ -34,6 +35,7 @@ private:
  float moveforward=0;
  float turn=0;
  Bullet  bullet;
+ GLuint tex;
 
     glm::vec3 cameraposition =
         glm::vec3(0.0f,0.0f,-25.0f);

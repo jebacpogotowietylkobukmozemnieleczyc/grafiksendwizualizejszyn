@@ -1,4 +1,24 @@
 #include "app.hpp"
+int cubeVertexCount = 24;
+
+float cubeVertices[] = { -1, -1, -1, -1, 1,  -1, 1,  1,  -1, 1,  -1, -1,
+
+                         -1, -1, 1,  -1, 1,  1,  1,  1,  1,  1,  -1, 1,
+
+                         -1, -1, -1, -1, -1, 1,  1,  -1, 1,  1,  -1, -1,
+
+                         -1, 1,  -1, -1, 1,  1,  1,  1,  1,  1,  1,  -1,
+
+                         -1, -1, -1, -1, -1, 1,  -1, 1,  1,  -1, 1,  -1,
+
+                         1,  -1, -1, 1,  -1, 1,  1,  1,  1,  1,  1,  -1 };
+
+float cubeColors[] = {
+  0, 0, 1, 0, 1, 1, 0, 1
+};
+float geomVertices[] = { -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0 };
+
+// trash
 App* app;
 static void DisplayFrameCallback(void) { app->DisplayFrame(); }
 static void NextFrameCallback(void) { app->NextFrame(); }
@@ -18,7 +38,6 @@ static void KeySpecialUpCallback(int c, int x, int y) {
   app->KeySpecialUp(c, x, y);
 }
 
-GLuint tex;
 App::App(int* argc, char** argv) {
 
   glutInit(argc, argv);
@@ -47,6 +66,7 @@ App::App(int* argc, char** argv) {
   // bullet.AddObject();
   bullet.AddLevel();
 
+  LoadTexture();
   std::cout << ">>start ";
   for (auto it = bullet.level.getVec().begin();
        it != bullet.level.getVec().end(); ++it) {
@@ -89,6 +109,19 @@ void App::DisplayFrame(void) {
   */
 
   // bullet.gameobject->GetRigidBody()->getMotionState()->getWorldTransform(trans);
+  glTranslatef(0.0f, 20.0f, 0.0f);
+  glBindTexture(GL_TEXTURE_2D, tex);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+  glVertexPointer(3, GL_FLOAT, 0, geomVertices);
+  glTexCoordPointer(2, GL_FLOAT, 0, cubeColors);
+
+  glDrawArrays(GL_QUADS, 0, 4);
+  glDisableClientState(GL_VERTEX_ARRAY);
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+  bullet.solidsphere.draw(20, 20, 20);
   bullet.getWorld()->debugDrawWorld();
   for (auto it = bullet.gameobject.begin(); it != bullet.gameobject.end();
        ++it) {
@@ -97,47 +130,48 @@ void App::DisplayFrame(void) {
     (*it)->GetTransform(trans);
     M = glm::mat4(1.0f);
 
-/*
- //   btMatrix3x3 rmatrix= trans.getBasis();
-    btMatrix3x3 rmatrix= btMatrix3x3(trans.getRotation());
-   glm::mat4 R = glm::mat4(rmatrix.getRow(0).getX(),
-                           rmatrix.getRow(0).getY(),
-                           rmatrix.getRow(0).getZ(),
-                           0,
-                           rmatrix.getRow(1).getX(),
-                           rmatrix.getRow(1).getY(),
-                           rmatrix.getRow(1).getZ(),
-                           0,
-                           rmatrix.getRow(2).getX(),
-                           rmatrix.getRow(2).getY(),
-                           rmatrix.getRow(2).getZ(),
-                           0,
-                           0,0,0,1);
-M=M*R;
-M = glm::translate(M, glm::vec3(trans.getOrigin().getX(),
-                                trans.getOrigin().getY(),
-                                trans.getOrigin().getZ()));
-    btScalar ryaw;
-    btScalar rpitch;
-    btScalar rroll;
-    rmatrix.getEulerYPR(ryaw,rpitch,rroll);
-*/
-M = glm::translate(M, glm::vec3(trans.getOrigin().getX(),
-                                trans.getOrigin().getY(),
-                                trans.getOrigin().getZ()));
-   btMatrix3x3 rotMatrix = trans.getBasis();
-    float z,y,x;
-            rotMatrix.getEulerZYX(z,y,x);
-    M= glm::rotate(M,x,glm::vec3(1.0f,0.0f,0.0f));
-    M= glm::rotate(M,y,glm::vec3(0.0f,1.0f,0.0f));
-    M= glm::rotate(M,z,glm::vec3(0.0f,0.0f,1.0f));
-   // M = glm::rotate(M, glm::vec3(trans.getBasis().getX(),
+    /*
+     //   btMatrix3x3 rmatrix= trans.getBasis();
+        btMatrix3x3 rmatrix= btMatrix3x3(trans.getRotation());
+       glm::mat4 R = glm::mat4(rmatrix.getRow(0).getX(),
+                               rmatrix.getRow(0).getY(),
+                               rmatrix.getRow(0).getZ(),
+                               0,
+                               rmatrix.getRow(1).getX(),
+                               rmatrix.getRow(1).getY(),
+                               rmatrix.getRow(1).getZ(),
+                               0,
+                               rmatrix.getRow(2).getX(),
+                               rmatrix.getRow(2).getY(),
+                               rmatrix.getRow(2).getZ(),
+                               0,
+                               0,0,0,1);
+    M=M*R;
+    M = glm::translate(M, glm::vec3(trans.getOrigin().getX(),
+                                    trans.getOrigin().getY(),
+                                    trans.getOrigin().getZ()));
+        btScalar ryaw;
+        btScalar rpitch;
+        btScalar rroll;
+        rmatrix.getEulerYPR(ryaw,rpitch,rroll);
+    */
+    M = glm::translate(M, glm::vec3(trans.getOrigin().getX(),
+                                    trans.getOrigin().getY(),
+                                    trans.getOrigin().getZ()));
+    btMatrix3x3 rotMatrix = trans.getBasis();
+    float z, y, x;
+    rotMatrix.getEulerZYX(z, y, x);
+    M = glm::rotate(M, x, glm::vec3(1.0f, 0.0f, 0.0f));
+    M = glm::rotate(M, y, glm::vec3(0.0f, 1.0f, 0.0f));
+    M = glm::rotate(M, z, glm::vec3(0.0f, 0.0f, 1.0f));
+    // M = glm::rotate(M, glm::vec3(trans.getBasis().getX(),
     //                                trans.getBasis().getY(),
-     //                               trans.getBasis().getZ()));
+    //                               trans.getBasis().getZ()));
 
     glLoadMatrixf(glm::value_ptr(V * M));
     (*it)->DrawShape();
   }
+
   glutSwapBuffers();
 }
 
@@ -164,6 +198,26 @@ void App::NextFrame(void) {
   cameraposition += glm::normalize(glm::cross(cameratarget, cameraup)) * turn;
 
   glutPostRedisplay();
+}
+
+void App::LoadTexture() {
+  TGAImg img; // Obojętnie czy globalnie, czy lokalnie
+  if (img.Load("bricks.tga") == IMG_OK) {
+    glGenTextures(1, &tex); // Zainicjuj uchwyt tex
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glBindTexture(GL_TEXTURE_2D, tex); // Przetwarzaj uchwyt tex
+    if (img.GetBPP() == 24) // Obrazek 24bit
+      glTexImage2D(GL_TEXTURE_2D, 0, 3, img.GetWidth(), img.GetHeight(), 0,
+                   GL_RGB, GL_UNSIGNED_BYTE, img.GetImg());
+    else if (img.GetBPP() == 32) // Obrazek 32bit
+      glTexImage2D(GL_TEXTURE_2D, 0, 4, img.GetWidth(), img.GetHeight(), 0,
+                   GL_RGBA, GL_UNSIGNED_BYTE, img.GetImg());
+    else {
+      // Obrazek 16 albo 8 bit, takimi się nie przejmujemy
+    }
+  } else {
+    // błąd
+  }
 }
 
 void App::KeyDown(unsigned char c, int x, int y) {
@@ -259,3 +313,4 @@ void App::KeySpecialUp(int c, int x, int y) {
       break;
   }
 }
+App::~App() { glDeleteTextures(1, &tex); }
