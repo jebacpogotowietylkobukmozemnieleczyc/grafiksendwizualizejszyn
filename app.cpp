@@ -1,17 +1,5 @@
 #include "app.hpp"
 int cubeVertexCount = 24;
-void App::Draw(void)
-{
-
-    glTranslatef(0.0f,0.0f,-20.0f);
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-2.0f, -2.0f,  2.0f);
-    glTexCoord2f(1.0f, 0.0f); glVertex3f( 2.0f, -2.0f,  2.0f);
-    glTexCoord2f(1.0f, 1.0f); glVertex3f( 2.0f,  2.0f,  2.0f);
-    glTexCoord2f(0.0f, 1.0f); glVertex3f(-2.0f,  2.0f,  2.0f);
-    glEnd();
-}
 float cubeVertices[] = { -1, -1, -1, -1, 1,  -1, 1,  1,  -1, 1,  -1, -1,
 
                          -1, -1, 1,  -1, 1,  1,  1,  1,  1,  1,  -1, 1,

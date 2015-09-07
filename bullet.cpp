@@ -175,6 +175,6 @@ shapetype = ShapeType::CUBE;
               nullptr,
       1, btVector3(0.2f, 0.6f, 0.6f), btVector3(0.0f, -100.0f, 0.0f),
       btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 0.0f, btVector3(0.0f, 0.0f, 0.0f));
-}
+  }
 
 Bullet::~Bullet() { delete levelobject; }

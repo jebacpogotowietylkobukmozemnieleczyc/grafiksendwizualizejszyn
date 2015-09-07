@@ -16,7 +16,6 @@ class App
 public:
     App(int* argc,char** argv);
     ~App();
-void Draw(void);
 
  void DisplayFrame(void) ;
  void NextFrame(void) ;
