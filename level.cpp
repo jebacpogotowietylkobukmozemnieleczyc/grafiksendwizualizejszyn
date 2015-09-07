@@ -43,6 +43,15 @@ float stepz = (endz - startz) / divz;
            vecind.push_back(v+divx+2);
            vecind.push_back(v+1);
            std::cout <<  v<< "www" << v+divx+1  << ' ' << v+divx+2<< ' ' << v+1 << std::endl;
+
+           texcoord.push_back(0);
+           texcoord.push_back(0);
+           texcoord.push_back(1);
+           texcoord.push_back(0);
+           texcoord.push_back(1);
+           texcoord.push_back(1);
+           texcoord.push_back(0);
+           texcoord.push_back(1);
            }
 
            veccolor.push_back(0);
@@ -65,12 +74,12 @@ for(auto it  = getVec().begin(); it != getVec().end(); ++it) {
             inverse.push_back( -(*(it)) );
         }
     glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     glVertexPointer(3,GL_FLOAT,0,vec.data());
-    glColorPointer(3,GL_FLOAT,0,veccolor.data());
+  glTexCoordPointer(2, GL_FLOAT, 0, texcoord.data());
 
     glDrawElements(GL_QUADS,vecind.size(),GL_UNSIGNED_INT,vecind.data());
     glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }

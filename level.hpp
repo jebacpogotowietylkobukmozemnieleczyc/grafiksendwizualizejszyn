@@ -30,6 +30,7 @@ int t =2;
 std::vector<float> vec;
 std::vector<unsigned int > vecind;
 std::vector<float> veccolor;
+std::vector<float> texcoord;
     std::function<void()> mfunction;
 };
 

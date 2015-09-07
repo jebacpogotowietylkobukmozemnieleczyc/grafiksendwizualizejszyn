@@ -1,6 +1,17 @@
 #include "app.hpp"
 int cubeVertexCount = 24;
+void App::Draw(void)
+{
 
+    glTranslatef(0.0f,0.0f,-20.0f);
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-2.0f, -2.0f,  2.0f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f( 2.0f, -2.0f,  2.0f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f( 2.0f,  2.0f,  2.0f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-2.0f,  2.0f,  2.0f);
+    glEnd();
+}
 float cubeVertices[] = { -1, -1, -1, -1, 1,  -1, 1,  1,  -1, 1,  -1, -1,
 
                          -1, -1, 1,  -1, 1,  1,  1,  1,  1,  1,  -1, 1,
@@ -14,6 +25,11 @@ float cubeVertices[] = { -1, -1, -1, -1, 1,  -1, 1,  1,  -1, 1,  -1, -1,
                          1,  -1, -1, 1,  -1, 1,  1,  1,  1,  1,  1,  -1 };
 
 float cubeColors[] = {
+  0, 0, 1, 0, 1, 1, 0, 1,
+  0, 0, 1, 0, 1, 1, 0, 1,
+  0, 0, 1, 0, 1, 1, 0, 1,
+  0, 0, 1, 0, 1, 1, 0, 1,
+  0, 0, 1, 0, 1, 1, 0, 1,
   0, 0, 1, 0, 1, 1, 0, 1
 };
 float geomVertices[] = { -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0 };
@@ -55,7 +71,9 @@ App::App(int* argc, char** argv) {
   glutSpecialFunc(KeySpecialDownCallback);
   glutSpecialUpFunc(KeySpecialUpCallback);
 
+  glEnable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_LIGHT0);
 
   std::cout << "<<start";
   for (auto it = bullet.level.getVec().begin();
@@ -96,6 +114,7 @@ void App::DisplayFrame(void) {
 
   M = glm::mat4(1.0f);
   glLoadMatrixf(glm::value_ptr(V * M));
+
   /*
           glEnableClientState(GL_VERTEX_ARRAY);
           glEnableClientState(GL_COLOR_ARRAY);
@@ -106,22 +125,23 @@ void App::DisplayFrame(void) {
           glDrawArrays(GL_QUADS,0,cubeVertexCount);
       glDisableClientState(GL_VERTEX_ARRAY);
           glDisableClientState(GL_COLOR_ARRAY);
-  */
+
 
   // bullet.gameobject->GetRigidBody()->getMotionState()->getWorldTransform(trans);
   glTranslatef(0.0f, 20.0f, 0.0f);
-  glBindTexture(GL_TEXTURE_2D, tex);
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-  glVertexPointer(3, GL_FLOAT, 0, geomVertices);
+  glVertexPointer(3, GL_FLOAT, 0, cubeVertices);
   glTexCoordPointer(2, GL_FLOAT, 0, cubeColors);
 
-  glDrawArrays(GL_QUADS, 0, 4);
+  glDrawArrays(GL_QUADS, 0, cubeVertexCount);
   glDisableClientState(GL_VERTEX_ARRAY);
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
   bullet.solidsphere.draw(20, 20, 20);
+  */
   bullet.getWorld()->debugDrawWorld();
   for (auto it = bullet.gameobject.begin(); it != bullet.gameobject.end();
        ++it) {
@@ -199,27 +219,15 @@ void App::NextFrame(void) {
 
   glutPostRedisplay();
 }
-
-void App::LoadTexture() {
-  TGAImg img; // Obojętnie czy globalnie, czy lokalnie
-  if (img.Load("bricks.tga") == IMG_OK) {
-    glGenTextures(1, &tex); // Zainicjuj uchwyt tex
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glBindTexture(GL_TEXTURE_2D, tex); // Przetwarzaj uchwyt tex
-    if (img.GetBPP() == 24) // Obrazek 24bit
-      glTexImage2D(GL_TEXTURE_2D, 0, 3, img.GetWidth(), img.GetHeight(), 0,
-                   GL_RGB, GL_UNSIGNED_BYTE, img.GetImg());
-    else if (img.GetBPP() == 32) // Obrazek 32bit
-      glTexImage2D(GL_TEXTURE_2D, 0, 4, img.GetWidth(), img.GetHeight(), 0,
-                   GL_RGBA, GL_UNSIGNED_BYTE, img.GetImg());
-    else {
-      // Obrazek 16 albo 8 bit, takimi się nie przejmujemy
-    }
-  } else {
-    // błąd
-  }
+int App::LoadTexture()
+{
+    texture[0] = SOIL_load_OGL_texture("bricks.bmp", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+    if(texture[0] == 0) return false;
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    return true;
 }
-
 void App::KeyDown(unsigned char c, int x, int y) {
   switch (c) {
     case 'w':
@@ -313,4 +321,4 @@ void App::KeySpecialUp(int c, int x, int y) {
       break;
   }
 }
-App::~App() { glDeleteTextures(1, &tex); }
+App::~App() { glDeleteTextures(1, &texture[0]); }

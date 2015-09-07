@@ -12,7 +12,7 @@ SOURCES += main.cpp tga.cpp detailed_cube.cpp \
     app.cpp \
     level.cpp
 INCLUDEPATH += /usr/include/bullet
-LIBS += -lGL -lglut -lGLEW -lBulletDynamics -lBulletCollision -lLinearMath
+LIBS += -lGL -lglut -lGLEW -lSOIL -lBulletDynamics -lBulletCollision -lLinearMath
 
 HEADERS += \
     bullet.hpp \

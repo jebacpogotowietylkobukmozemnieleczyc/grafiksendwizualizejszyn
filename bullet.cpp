@@ -17,7 +17,7 @@ Bullet::Bullet()
       // create the debug drawer
       debugdrawer(new DebugDrawer()),
       level(NULL, 4, -10, -10, 10, 20, 8, 8) ,
-solidsphere(4,12,14)
+solidsphere(2,12,14)
 {
   world->setGravity(btVector3(0, 10, 0));
   // set the initial debug level to 0
@@ -39,7 +39,7 @@ void Bullet::AddObject(
         drawfunction = [&]() { level.DrawLevel(); };
                 break;
     case ShapeType::SPHERE:
-        drawfunction = []() { glutSolidSphere(2, 20, 20);  };
+        drawfunction = [&]() { solidsphere.draw(0,0,0);  };
         pShape=new btSphereShape(2) ;
                 break;
     case ShapeType::CUBE:
