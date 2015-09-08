@@ -15,7 +15,10 @@ public:
 
 ~Bullet();
     auto getWorld () {return world;}
-    auto getLevel () {return level;}
+    auto& getLevel () {return level;}
+    auto getSolidSphere (){return solidsphere;}
+    const auto& getGameObject () const {return gameobject;}
+    const auto& getDebugDrawer() const {return debugdrawer;}
 void     setShapetype (ShapeType nshapetype) {shapetype=nshapetype;}
     //void InitBullet();
     void AddObject();
@@ -26,7 +29,7 @@ void AddObject(btCollisionShape* pShape, float mass,
                        const btVector3 &direction);
     void AddLevel();
 
-//private:
+private:
     // core Bullet components
     std::unique_ptr<btCollisionConfiguration> collisionconfiguration;
     std::unique_ptr<btCollisionDispatcher> dispatcher;

@@ -21,7 +21,8 @@
         endx(endx),
         endz(endz),
         divx(divx),
-        divz(divz)
+        divz(divz),
+      debugnormal(false)
     {
 
 int v =0;
@@ -119,6 +120,7 @@ for(auto it  = getVec().begin(); it != getVec().end(); ++it) {
         glDisableClientState(GL_NORMAL_ARRAY);
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
+  if(debugnormal==false)return;
   auto it2 =vecnorm.begin();
   float m = 1.f;
   int x=0;

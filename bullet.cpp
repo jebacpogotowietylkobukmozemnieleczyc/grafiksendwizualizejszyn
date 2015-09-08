@@ -2,27 +2,20 @@
 #include "iostream"
 
 Bullet::Bullet()
-    : // create the collision configuration
+    :
       collisionconfiguration(new btDefaultCollisionConfiguration()),
-      // create the dispatcher
       dispatcher(new btCollisionDispatcher(collisionconfiguration.get())),
-      // create the broadphase
       broadphase(new btDbvtBroadphase()),
-      // create the constraint solver
       solver(new btSequentialImpulseConstraintSolver()),
-      // create the world
       world(new btDiscreteDynamicsWorld(dispatcher.get(), broadphase.get(),
                                         solver.get(),
                                         collisionconfiguration.get())),
-      // create the debug drawer
       debugdrawer(new DebugDrawer()),
       level(NULL, 4, -10, -10, 10, 10, 4, 4) ,
 solidsphere(2,12,14)
 {
   world->setGravity(btVector3(0, 10, 0));
-  // set the initial debug level to 0
   debugdrawer->setDebugMode(0);
-  // add the debug drawer to the world
   world->setDebugDrawer(debugdrawer.get());
 
 }
@@ -65,7 +58,6 @@ void Bullet::AddObject(
     velocity.normalize();
     velocity *= speed;
 
-    // set the linear velocity of the box
     temp->GetRigidBody()->setLinearVelocity(velocity);
   }
   gameobject.push_back(std::move(temp));

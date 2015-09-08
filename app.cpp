@@ -94,29 +94,16 @@ App::App(int* argc, char** argv):width(800),height(800) {
   glEnable(GL_NORMALIZE);
   glShadeModel(GL_SMOOTH);
 
-  std::cout << "<<start";
-  for (auto it = bullet.level.getVec().begin();
-       it != bullet.level.getVec().end(); ++it) {
-    std::cout << *it << " ";
-  }
-  std::cout << std::endl;
-  // bullet.AddObject();
   bullet.AddLevel();
 
   LoadTexture();
-  std::cout << ">>start ";
-  for (auto it = bullet.level.getVec().begin();
-       it != bullet.level.getVec().end(); ++it) {
-    std::cout << *(it) << " ";
-  }
-  std::cout << std::endl;
 }
 
 void App::DisplayFrame(void) {
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  bullet.world->stepSimulation(1);
+  bullet.getWorld()->stepSimulation(1);
   glm::mat4 M;
   // std::cout <<  "<--" << cameraposition.x << ' ' << ' ' << cameraposition.y
   // << ' ' << cameraposition.z << std::endl;
@@ -159,7 +146,7 @@ void App::DisplayFrame(void) {
   static float staticx =0;
   M=glm::rotate(M,staticx+=0.01,glm::vec3(1.0f,0.0f,1.0f));
   glLoadMatrixf(glm::value_ptr(V*M));
-  bullet.solidsphere.draw(0,0,-10);
+  bullet.getSolidSphere().draw(0,0,-10);
   /*
           glEnableClientState(GL_VERTEX_ARRAY);
           glEnableClientState(GL_COLOR_ARRAY);
@@ -188,7 +175,7 @@ void App::DisplayFrame(void) {
   bullet.solidsphere.draw(20, 20, 20);
   */
   bullet.getWorld()->debugDrawWorld();
-  for (auto it = bullet.gameobject.begin(); it != bullet.gameobject.end();
+  for (auto it = bullet.getGameObject().begin(); it != bullet.getGameObject().end();
        ++it) {
 
     btTransform trans;
@@ -356,11 +343,15 @@ height = 800;
       break;
   case 'b':
 
-  bullet.debugdrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe);
+  bullet.getDebugDrawer()->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe);
       break;
   case 'n':
 
-  bullet.debugdrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb);
+  bullet.getDebugDrawer()->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb);
+      break;
+  case 'm':
+
+  bullet.getLevel().ToggleDebug();
       break;
 
   }
