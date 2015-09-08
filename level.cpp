@@ -65,7 +65,7 @@ float stepz = (endz - startz) / divz;
     }
 int x =0;
 int z =0;
-for(auto it  = vec.begin(); it != vec.end(); ++it) {
+for(auto it  = vec.begin(); it != vec.end();it+=3) {
     if (x >=divx) {
       ++z;
       x = 0;
@@ -78,7 +78,16 @@ for(auto it  = vec.begin(); it != vec.end(); ++it) {
                                     *(it + (3 * (divx + 1)) + 1),
                                     *(it + (3 * (divx + 1)) + 2));
             glm::vec3 vec3(*(it+3),*(it+4),*(it+5));
-           glm::vec3 norm =glm::cross((vec3 -vec1),(vec2-vec1));
+           glm::vec3 norm =glm::cross((vec2-vec1),(vec3 -vec1));
+           vecnorm.push_back(norm.x);
+           vecnorm.push_back(norm.y);
+           vecnorm.push_back(norm.z);
+           vecnorm.push_back(norm.x);
+           vecnorm.push_back(norm.y);
+           vecnorm.push_back(norm.z);
+           vecnorm.push_back(norm.x);
+           vecnorm.push_back(norm.y);
+           vecnorm.push_back(norm.z);
            vecnorm.push_back(norm.x);
            vecnorm.push_back(norm.y);
            vecnorm.push_back(norm.z);
@@ -109,4 +118,52 @@ for(auto it  = getVec().begin(); it != getVec().end(); ++it) {
     glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_NORMAL_ARRAY);
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+  auto it2 =vecnorm.begin();
+  float m = 1.f;
+  int x=0;
+  int z =0;
+  for(auto it  = vec.begin(); it != vec.end(); it+=3) {
+      if (x >=divx) {
+        ++z;
+        x = 0;
+        continue;
+      }
+      if (z >= divz)
+        break;
+      glBegin(GL_LINES);
+      glVertex3f(*(it), *(it + 1), *(it + 2));
+      glVertex3f(*(it)+m*(*(it2)), *(it + 1)+m*(*(it2+1)), *(it + 2)+m*(*(it2+2)));
+      glEnd();
+      std::cout << *it2 << " " << *(it2+1) << " " << *(it2+2) << std::endl;
+      it2+=3;
+      glBegin(GL_LINES);
+      glVertex3f(*(it + (3 * (divx + 1))),
+                        *(it + (3 * (divx + 1)) + 1),
+                        *(it + (3 * (divx + 1)) + 2));
+      glVertex3f((*(it + (3 * (divx + 1))))+m*(*(it2)),
+                        (*(it + (3 * (divx + 1))) + 1)+m*(*(it2+1)),
+                       ( *(it + (3 * (divx + 1))) + 2)+m*(*(it2+2)));
+      glEnd();
+      std::cout << *it2 << " " << *(it2+1) << " " << *(it2+2) << std::endl;
+      it2+=3;
+      glBegin(GL_LINES);
+      glVertex3f(*(it + (3 * (divx + 1)) + 3),
+                        *(it + (3 * (divx + 1)) + 4),
+                        *(it + (3 * (divx + 1)) + 5));
+      glVertex3f(*(it + (3 * (divx + 1)) + 3)+m*(*(it2)),
+                        *(it + (3 * (divx + 1)) + 4)+m*(*(it2+1)),
+                        *(it + (3 * (divx + 1)) + 5)+m*(*(it2+2)));
+      glEnd();
+      std::cout << *it2 << " " << *(it2+1) << " " << *(it2+2) << std::endl;
+      it2+=3;
+      glBegin(GL_LINES);
+      glVertex3f(*(it + 3), *(it + 4), *(it + 5));
+      glVertex3f(*(it + 3)+m*(*(it2)), *(it + 4)+m*(*(it2+1)), *(it + 5)+m*(*(it2+2)));
+      glEnd();
+      std::cout << *it2 << " " << *(it2+1) << " " << *(it2+2) << std::endl;
+      it2+=3;
+             ++x;
+  }
+
     }

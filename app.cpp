@@ -65,13 +65,14 @@ App::App(int* argc, char** argv):width(800),height(800) {
   glutSpecialFunc(KeySpecialDownCallback);
   glutSpecialUpFunc(KeySpecialUpCallback);
   glutMouseFunc(MouseFuncCallback);
-  glutPassiveMotionFunc(MotionFuncCallback);
+  ResetPointer();
   glutSetCursor(GLUT_CURSOR_NONE);
+  glutPassiveMotionFunc(MotionFuncCallback);
 
 
 
     GLfloat ambient[] =
-    { 0.2f, 0.2f, 0.2f, 1.0f }; // dark grey
+    { 0.2f, 0.2f, 0.2f, 1.0f }; //
     GLfloat diffuse[] =
     { 1.0f, 1.0f, 1.0f, 1.0f }; // white
     GLfloat specular[] =
@@ -82,15 +83,16 @@ App::App(int* argc, char** argv):width(800),height(800) {
     glMaterialfv(GL_LIGHT0, GL_AMBIENT, ambient);
     glMaterialfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
     glMaterialfv(GL_LIGHT0, GL_SPECULAR, specular);
-    glMateriali(GL_FRONT, GL_SHININESS, 35);
+    glMateriali(GL_FRONT, GL_SHININESS, 50);
 
     glEnable(GL_LIGHTING); // enables lighting
-
+   // glEnable(GL_COLOR_MATERIAL);
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHT1);
   glEnable(GL_NORMALIZE);
+  glShadeModel(GL_SMOOTH);
 
   std::cout << "<<start";
   for (auto it = bullet.level.getVec().begin();
@@ -130,11 +132,10 @@ void App::DisplayFrame(void) {
   glMatrixMode(GL_MODELVIEW);
 
   M = glm::mat4(1.0f);
-  //glLoadMatrixf(glm::value_ptr(V ));
-  float lightPos[]={20,-50,-1,0};
-  float lightPos2[]={-20,-50,20,0};
+  glLoadMatrixf(glm::value_ptr(V ));
+  float lightPos[]={0,-200,0,1};
   GLfloat ambient[] =
-  { 0.2f, 0.2f, 0.2f, 1.0f }; // dark grey
+  { 0.1f, 0.1f, 0.1f, 1.0f };
   GLfloat diffuse[] =
   { 1.0f, 1.0f, 1.0f, 1.0f }; // white
   GLfloat specular[] =
@@ -144,12 +145,21 @@ void App::DisplayFrame(void) {
   glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
   glLightfv(GL_LIGHT0,GL_POSITION,lightPos);
 
-  glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, specular);
+  GLfloat ambient2[] =
+  { 0.0f, 0.0f, 0.1f, 1.0f };
+  GLfloat diffuse2[] =
+  { 0.0f, 0.0f, 1.0f, 1.0f }; // white
+  GLfloat specular2[] =
+  { 0.0f, 0.0f, 1.0f, 1.0f }; // white
+  float lightPos2[]={-20,-50,0,1};
+  glLightfv(GL_LIGHT1, GL_AMBIENT, ambient2);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse2);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, specular2);
     glLightfv(GL_LIGHT1,GL_POSITION,lightPos2);
-
+  static float staticx =0;
+  M=glm::rotate(M,staticx+=0.01,glm::vec3(1.0f,0.0f,1.0f));
   glLoadMatrixf(glm::value_ptr(V*M));
+  bullet.solidsphere.draw(0,0,-10);
   /*
           glEnableClientState(GL_VERTEX_ARRAY);
           glEnableClientState(GL_COLOR_ARRAY);
