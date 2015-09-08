@@ -23,6 +23,9 @@ public:
 void KeySpecialUp(int c, int x, int y) ;
  void KeyDown(unsigned char c, int x, int y) ;
 void KeyUp(unsigned char c, int x, int y) ;
+ void MouseFunc(int button, int state, int x, int y);
+ void MotionFunc( int x, int y);
+ void ResetPointer();
 int LoadTexture();
 private:
  float activatedpitch=0;
@@ -34,6 +37,11 @@ private:
  float speed =1;
  float moveforward=0;
  float turn=0;
+ int mousex;
+ int mousey;
+ bool fullscreen = false;
+ int height ;
+ int width;
  Bullet  bullet;
  GLuint texture[1];
 

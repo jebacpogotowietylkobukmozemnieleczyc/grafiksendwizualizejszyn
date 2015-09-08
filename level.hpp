@@ -31,6 +31,7 @@ std::vector<float> vec;
 std::vector<unsigned int > vecind;
 std::vector<float> veccolor;
 std::vector<float> texcoord;
+std::vector<float> vecnorm;
     std::function<void()> mfunction;
 };
 

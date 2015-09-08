@@ -25,7 +25,6 @@ solidsphere(2,12,14)
   // add the debug drawer to the world
   world->setDebugDrawer(debugdrawer.get());
 
-  debugdrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe);
 }
 
 void Bullet::AddObject(

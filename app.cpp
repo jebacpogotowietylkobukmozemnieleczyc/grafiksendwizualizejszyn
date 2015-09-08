@@ -42,11 +42,17 @@ static void KeySpecialUpCallback(int c, int x, int y) {
   app->KeySpecialUp(c, x, y);
 }
 
-App::App(int* argc, char** argv) {
+static void MouseFuncCallback(int button, int state, int x, int y) {
+  app->MouseFunc(button,state, x, y);
+}
+static void MotionFuncCallback( int x, int y) {
+  app->MotionFunc( x, y);
+}
+App::App(int* argc, char** argv):width(800),height(800) {
 
   glutInit(argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowSize(800, 800);
+  glutInitWindowSize(width ,height);
   glutInitWindowPosition(0, 0);
   glutCreateWindow("Program OpenGL");
   glutDisplayFunc(DisplayFrameCallback);
@@ -58,10 +64,33 @@ App::App(int* argc, char** argv) {
   glutKeyboardUpFunc(KeyUpCallback);
   glutSpecialFunc(KeySpecialDownCallback);
   glutSpecialUpFunc(KeySpecialUpCallback);
+  glutMouseFunc(MouseFuncCallback);
+  glutPassiveMotionFunc(MotionFuncCallback);
+  glutSetCursor(GLUT_CURSOR_NONE);
+
+
+
+    GLfloat ambient[] =
+    { 0.2f, 0.2f, 0.2f, 1.0f }; // dark grey
+    GLfloat diffuse[] =
+    { 1.0f, 1.0f, 1.0f, 1.0f }; // white
+    GLfloat specular[] =
+    { 1.0f, 1.0f, 1.0f, 1.0f }; // white
+
+
+    // set the ambient, diffuse, specular and position for LIGHT0
+    glMaterialfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glMaterialfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glMaterialfv(GL_LIGHT0, GL_SPECULAR, specular);
+    glMateriali(GL_FRONT, GL_SHININESS, 35);
+
+    glEnable(GL_LIGHTING); // enables lighting
 
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHT1);
+  glEnable(GL_NORMALIZE);
 
   std::cout << "<<start";
   for (auto it = bullet.level.getVec().begin();
@@ -101,8 +130,26 @@ void App::DisplayFrame(void) {
   glMatrixMode(GL_MODELVIEW);
 
   M = glm::mat4(1.0f);
-  glLoadMatrixf(glm::value_ptr(V * M));
+  //glLoadMatrixf(glm::value_ptr(V ));
+  float lightPos[]={20,-50,-1,0};
+  float lightPos2[]={-20,-50,20,0};
+  GLfloat ambient[] =
+  { 0.2f, 0.2f, 0.2f, 1.0f }; // dark grey
+  GLfloat diffuse[] =
+  { 1.0f, 1.0f, 1.0f, 1.0f }; // white
+  GLfloat specular[] =
+  { 1.0f, 1.0f, 1.0f, 1.0f }; // white
+  glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+  glLightfv(GL_LIGHT0,GL_POSITION,lightPos);
 
+  glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, specular);
+    glLightfv(GL_LIGHT1,GL_POSITION,lightPos2);
+
+  glLoadMatrixf(glm::value_ptr(V*M));
   /*
           glEnableClientState(GL_VERTEX_ARRAY);
           glEnableClientState(GL_COLOR_ARRAY);
@@ -279,6 +326,33 @@ void App::KeyUp(unsigned char c, int x, int y) {
           btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 200,
           btVector3(cameratarget.x, cameratarget.y, cameratarget.z));
       break;
+  case 'f':
+      if(fullscreen==false){
+         width= glutGet(GLUT_SCREEN_WIDTH);
+         std::cout << "Resolution " << width << std::endl;
+         height= glutGet(GLUT_SCREEN_HEIGHT);
+  glutPositionWindow(0,0);
+  glutReshapeWindow(width, height);
+  glutFullScreen();
+fullscreen=true;
+      }
+      else{
+width =800;
+height = 800;
+  glutPositionWindow(0,0);
+  glutReshapeWindow(width, height);
+  fullscreen=false;
+      }
+      break;
+  case 'b':
+
+  bullet.debugdrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe);
+      break;
+  case 'n':
+
+  bullet.debugdrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb);
+      break;
+
   }
 }
 void App::KeySpecialUp(int c, int x, int y) {
@@ -309,4 +383,61 @@ void App::KeySpecialUp(int c, int x, int y) {
       break;
   }
 }
+
+void App::MouseFunc(int button, int state, int x, int y)
+{
+
+switch (button)
+{
+    case GLUT_LEFT_BUTTON:
+
+        if(state == GLUT_DOWN)
+        {
+
+      bullet.AddObject(
+
+          nullptr, 1, btVector3(0.2f, 0.6f, 0.6f),
+          btVector3(cameraposition.x, cameraposition.y, cameraposition.z),
+          btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 50,
+          btVector3(cameratarget.x, cameratarget.y, cameratarget.z));
+
+
+        }
+    break;
+    case GLUT_RIGHT_BUTTON:
+
+        if(state == GLUT_DOWN)
+        {
+
+      bullet.AddObject(
+
+          nullptr, 1, btVector3(0.2f, 0.6f, 0.6f),
+          btVector3(cameraposition.x, cameraposition.y, cameraposition.z),
+          btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 200,
+          btVector3(cameratarget.x, cameratarget.y, cameratarget.z));
+
+        }
+    break;
+    }
+}
+
+void App::ResetPointer(){
+   glutWarpPointer(width/2,height/2);
+   mousex=width/2;
+   mousey=height/2;
+
+}
+
+
+ void App::MotionFunc( int x, int y){
+
+   yaw+=(mousex-x)*mousesensivity*0.0005;
+   pitch +=(y-mousey)*mousesensivity*0.0005;
+   if (fabs(width/2 - x) > 25 || fabs(height/2 - y) > 25) {
+           ResetPointer();
+       }
+ }
+
+
+
 App::~App() { glDeleteTextures(1, &texture[0]); }
