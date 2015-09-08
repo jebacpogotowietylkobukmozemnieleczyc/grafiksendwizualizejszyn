@@ -7,7 +7,6 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "tga.h"
 #include "SOIL.h"
 
 #include "bullet.hpp"
@@ -26,7 +25,7 @@ void KeyUp(unsigned char c, int x, int y) ;
  void MouseFunc(int button, int state, int x, int y);
  void MotionFunc( int x, int y);
  void ResetPointer();
-int LoadTexture();
+int LoadTexture(int id,std::string filename);
 private:
  float activatedpitch=0;
  float activatedyaw=0;

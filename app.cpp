@@ -1,28 +1,4 @@
 #include "app.hpp"
-int cubeVertexCount = 24;
-float cubeVertices[] = { -1, -1, -1, -1, 1,  -1, 1,  1,  -1, 1,  -1, -1,
-
-                         -1, -1, 1,  -1, 1,  1,  1,  1,  1,  1,  -1, 1,
-
-                         -1, -1, -1, -1, -1, 1,  1,  -1, 1,  1,  -1, -1,
-
-                         -1, 1,  -1, -1, 1,  1,  1,  1,  1,  1,  1,  -1,
-
-                         -1, -1, -1, -1, -1, 1,  -1, 1,  1,  -1, 1,  -1,
-
-                         1,  -1, -1, 1,  -1, 1,  1,  1,  1,  1,  1,  -1 };
-
-float cubeColors[] = {
-  0, 0, 1, 0, 1, 1, 0, 1,
-  0, 0, 1, 0, 1, 1, 0, 1,
-  0, 0, 1, 0, 1, 1, 0, 1,
-  0, 0, 1, 0, 1, 1, 0, 1,
-  0, 0, 1, 0, 1, 1, 0, 1,
-  0, 0, 1, 0, 1, 1, 0, 1
-};
-float geomVertices[] = { -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0 };
-
-// trash
 App* app;
 static void DisplayFrameCallback(void) { app->DisplayFrame(); }
 static void NextFrameCallback(void) { app->NextFrame(); }
@@ -58,7 +34,6 @@ App::App(int* argc, char** argv):width(800),height(800) {
   glutDisplayFunc(DisplayFrameCallback);
   glutIdleFunc(NextFrameCallback);
 
-  // Tutaj kod inicjujacy
   glewInit();
   glutKeyboardFunc(KeyDownCallback);
   glutKeyboardUpFunc(KeyUpCallback);
@@ -72,21 +47,19 @@ App::App(int* argc, char** argv):width(800),height(800) {
 
 
     GLfloat ambient[] =
-    { 0.2f, 0.2f, 0.2f, 1.0f }; //
+    { 0.2f, 0.2f, 0.2f, 1.0f };
     GLfloat diffuse[] =
-    { 1.0f, 1.0f, 1.0f, 1.0f }; // white
+    { 1.0f, 1.0f, 1.0f, 1.0f };
     GLfloat specular[] =
-    { 1.0f, 1.0f, 1.0f, 1.0f }; // white
+    { 1.0f, 1.0f, 1.0f, 1.0f };
 
 
-    // set the ambient, diffuse, specular and position for LIGHT0
     glMaterialfv(GL_LIGHT0, GL_AMBIENT, ambient);
     glMaterialfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
     glMaterialfv(GL_LIGHT0, GL_SPECULAR, specular);
     glMateriali(GL_FRONT, GL_SHININESS, 50);
 
-    glEnable(GL_LIGHTING); // enables lighting
-   // glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_LIGHTING);
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);
@@ -96,7 +69,8 @@ App::App(int* argc, char** argv):width(800),height(800) {
 
   bullet.AddLevel();
 
-  LoadTexture();
+  LoadTexture(0,"bricks.bmp");
+  LoadTexture(1,"ntex.bmp");
 }
 
 void App::DisplayFrame(void) {
@@ -105,10 +79,6 @@ void App::DisplayFrame(void) {
 
   bullet.getWorld()->stepSimulation(1);
   glm::mat4 M;
-  // std::cout <<  "<--" << cameraposition.x << ' ' << ' ' << cameraposition.y
-  // << ' ' << cameraposition.z << std::endl;
-  // std::cout << cameraposition.x << ' ' << ' ' << cameraposition.y << ' ' <<
-  // cameraposition.z << std::endl;
   glm::mat4 V = glm::lookAt(cameraposition, cameraposition + cameratarget,
                             glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -124,9 +94,9 @@ void App::DisplayFrame(void) {
   GLfloat ambient[] =
   { 0.1f, 0.1f, 0.1f, 1.0f };
   GLfloat diffuse[] =
-  { 1.0f, 1.0f, 1.0f, 1.0f }; // white
+  { 1.0f, 1.0f, 1.0f, 1.0f };
   GLfloat specular[] =
-  { 1.0f, 1.0f, 1.0f, 1.0f }; // white
+  { 1.0f, 1.0f, 1.0f, 1.0f };
   glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
@@ -135,78 +105,28 @@ void App::DisplayFrame(void) {
   GLfloat ambient2[] =
   { 0.0f, 0.0f, 0.1f, 1.0f };
   GLfloat diffuse2[] =
-  { 0.0f, 0.0f, 1.0f, 1.0f }; // white
+  { 0.0f, 0.0f, 1.0f, 1.0f };
   GLfloat specular2[] =
-  { 0.0f, 0.0f, 1.0f, 1.0f }; // white
+  { 0.0f, 0.0f, 1.0f, 1.0f };
   float lightPos2[]={-20,-50,0,1};
   glLightfv(GL_LIGHT1, GL_AMBIENT, ambient2);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse2);
     glLightfv(GL_LIGHT1, GL_SPECULAR, specular2);
     glLightfv(GL_LIGHT1,GL_POSITION,lightPos2);
-  static float staticx =0;
-  M=glm::rotate(M,staticx+=0.01,glm::vec3(1.0f,0.0f,1.0f));
+ // static float staticx =0;
+//  M=glm::rotate(M,staticx+=0.01,glm::vec3(1.0f,0.0f,1.0f));
   glLoadMatrixf(glm::value_ptr(V*M));
-  bullet.getSolidSphere().draw(0,0,-10);
-  /*
-          glEnableClientState(GL_VERTEX_ARRAY);
-          glEnableClientState(GL_COLOR_ARRAY);
-
-          glVertexPointer(3,GL_FLOAT,0,cubeVertices);
-          glColorPointer(3,GL_FLOAT,0,cubeColors);
-
-          glDrawArrays(GL_QUADS,0,cubeVertexCount);
-      glDisableClientState(GL_VERTEX_ARRAY);
-          glDisableClientState(GL_COLOR_ARRAY);
-
-
-  // bullet.gameobject->GetRigidBody()->getMotionState()->getWorldTransform(trans);
-  glTranslatef(0.0f, 20.0f, 0.0f);
-  glBindTexture(GL_TEXTURE_2D, texture[0]);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-  glVertexPointer(3, GL_FLOAT, 0, cubeVertices);
-  glTexCoordPointer(2, GL_FLOAT, 0, cubeColors);
-
-  glDrawArrays(GL_QUADS, 0, cubeVertexCount);
-  glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-  bullet.solidsphere.draw(20, 20, 20);
-  */
+ // bullet.getSolidSphere().draw(0,0,-10);
   bullet.getWorld()->debugDrawWorld();
+  int texturenr =0;
   for (auto it = bullet.getGameObject().begin(); it != bullet.getGameObject().end();
        ++it) {
 
+      texturenr = texturenr==1 ? 0 : 1;
+    glBindTexture(GL_TEXTURE_2D,texture[texturenr]);
     btTransform trans;
     (*it)->GetTransform(trans);
     M = glm::mat4(1.0f);
-
-    /*
-     //   btMatrix3x3 rmatrix= trans.getBasis();
-        btMatrix3x3 rmatrix= btMatrix3x3(trans.getRotation());
-       glm::mat4 R = glm::mat4(rmatrix.getRow(0).getX(),
-                               rmatrix.getRow(0).getY(),
-                               rmatrix.getRow(0).getZ(),
-                               0,
-                               rmatrix.getRow(1).getX(),
-                               rmatrix.getRow(1).getY(),
-                               rmatrix.getRow(1).getZ(),
-                               0,
-                               rmatrix.getRow(2).getX(),
-                               rmatrix.getRow(2).getY(),
-                               rmatrix.getRow(2).getZ(),
-                               0,
-                               0,0,0,1);
-    M=M*R;
-    M = glm::translate(M, glm::vec3(trans.getOrigin().getX(),
-                                    trans.getOrigin().getY(),
-                                    trans.getOrigin().getZ()));
-        btScalar ryaw;
-        btScalar rpitch;
-        btScalar rroll;
-        rmatrix.getEulerYPR(ryaw,rpitch,rroll);
-    */
     M = glm::translate(M, glm::vec3(trans.getOrigin().getX(),
                                     trans.getOrigin().getY(),
                                     trans.getOrigin().getZ()));
@@ -216,11 +136,9 @@ void App::DisplayFrame(void) {
     M = glm::rotate(M, x, glm::vec3(1.0f, 0.0f, 0.0f));
     M = glm::rotate(M, y, glm::vec3(0.0f, 1.0f, 0.0f));
     M = glm::rotate(M, z, glm::vec3(0.0f, 0.0f, 1.0f));
-    // M = glm::rotate(M, glm::vec3(trans.getBasis().getX(),
-    //                                trans.getBasis().getY(),
-    //                               trans.getBasis().getZ()));
 
     glLoadMatrixf(glm::value_ptr(V * M));
+
     (*it)->DrawShape();
   }
 
@@ -251,11 +169,11 @@ void App::NextFrame(void) {
 
   glutPostRedisplay();
 }
-int App::LoadTexture()
+int App::LoadTexture(int nr,std::string filename)
 {
-    texture[0] = SOIL_load_OGL_texture("bricks.bmp", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-    if(texture[0] == 0) return false;
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    texture[nr] = SOIL_load_OGL_texture(filename.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+    if(texture[nr] == 0) return false;
+    glBindTexture(GL_TEXTURE_2D, texture[nr]);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     return true;
@@ -326,7 +244,6 @@ void App::KeyUp(unsigned char c, int x, int y) {
   case 'f':
       if(fullscreen==false){
          width= glutGet(GLUT_SCREEN_WIDTH);
-         std::cout << "Resolution " << width << std::endl;
          height= glutGet(GLUT_SCREEN_HEIGHT);
   glutPositionWindow(0,0);
   glutReshapeWindow(width, height);
@@ -441,4 +358,5 @@ void App::ResetPointer(){
 
 
 
-App::~App() { glDeleteTextures(1, &texture[0]); }
+App::~App() { glDeleteTextures(1, &texture[0]);
+              glDeleteTextures(1, &texture[2]); }

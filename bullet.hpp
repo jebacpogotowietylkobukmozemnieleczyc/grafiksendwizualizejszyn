@@ -13,15 +13,12 @@ class Bullet
 public:
     Bullet();
 
-~Bullet();
-    auto getWorld () {return world;}
+    const auto getWorld ()const {return world;}
     auto& getLevel () {return level;}
-    auto getSolidSphere (){return solidsphere;}
+    const auto& getSolidSphere ()const {return solidsphere;}
     const auto& getGameObject () const {return gameobject;}
     const auto& getDebugDrawer() const {return debugdrawer;}
 void     setShapetype (ShapeType nshapetype) {shapetype=nshapetype;}
-    //void InitBullet();
-    void AddObject();
 void AddObject(btCollisionShape* pShape, float mass,
         const btVector3 &color, const btVector3 &initialPosition,
         const btQuaternion &initialRotation,
@@ -30,7 +27,6 @@ void AddObject(btCollisionShape* pShape, float mass,
     void AddLevel();
 
 private:
-    // core Bullet components
     std::unique_ptr<btCollisionConfiguration> collisionconfiguration;
     std::unique_ptr<btCollisionDispatcher> dispatcher;
     std::unique_ptr<btBroadphaseInterface> broadphase;
@@ -39,7 +35,6 @@ private:
 
     std::unique_ptr<DebugDrawer> debugdrawer;
     std::vector<std::unique_ptr<GameObject> > gameobject;
-    GameObject* levelobject;
 Level level;
 SolidSphere solidsphere;
 ShapeType shapetype;

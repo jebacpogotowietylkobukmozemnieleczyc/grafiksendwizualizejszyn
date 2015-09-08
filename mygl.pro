@@ -5,7 +5,7 @@ CONFIG -= qt
 
 QMAKE_CXXFLAGS += -std=c++1y
 
-SOURCES += main.cpp tga.cpp detailed_cube.cpp \
+SOURCES += main.cpp \
     bullet.cpp \
     DebugDrawer.cpp \
     GameObject.cpp \
@@ -21,4 +21,4 @@ HEADERS += \
     app.hpp \
     level.hpp \
     solidsphere.hpp \
-    tga.h
+    SOIL.h

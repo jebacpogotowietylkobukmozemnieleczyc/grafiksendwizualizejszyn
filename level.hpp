@@ -5,7 +5,7 @@
 class Level
 {
 public:
-    Level(std::function<void()> mfunction,
+    Level(
           int t,
           float startx,
           float startz,
@@ -16,7 +16,7 @@ public:
 
 
     void DrawLevel();
-    const std::vector<float>& getVec() const{return vec;}
+    const auto & getVec() const{return vec;}
     auto getDivx() {return divx;}
     auto getDivz() {return divz;}
     void ToggleDebug(){if(debugnormal==true)debugnormal=false;
@@ -32,10 +32,8 @@ int t =2;
 bool debugnormal;
 std::vector<float> vec;
 std::vector<unsigned int > vecind;
-std::vector<float> veccolor;
 std::vector<float> texcoord;
 std::vector<float> vecnorm;
-    std::function<void()> mfunction;
 };
 
 #endif // LEVEL_HPP

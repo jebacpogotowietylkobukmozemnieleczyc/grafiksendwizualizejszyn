@@ -3,7 +3,6 @@
 
 #include <btBulletDynamicsCommon.h>
 
-#include "OpenGLMotionState.h"
 #include <functional>
 
 class GameObject
@@ -14,7 +13,6 @@ public:
             const btQuaternion &initialRotation = btQuaternion(1, 0, 0, 0));
 	~GameObject();
 
-	// accessors
 	btCollisionShape* GetShape()
 	{
 		return m_pShape;
