@@ -2,8 +2,7 @@
 #include "iostream"
 
 Bullet::Bullet()
-    :
-      collisionconfiguration(new btDefaultCollisionConfiguration()),
+    : collisionconfiguration(new btDefaultCollisionConfiguration()),
       dispatcher(new btCollisionDispatcher(collisionconfiguration.get())),
       broadphase(new btDbvtBroadphase()),
       solver(new btSequentialImpulseConstraintSolver()),
@@ -11,42 +10,39 @@ Bullet::Bullet()
                                         solver.get(),
                                         collisionconfiguration.get())),
       debugdrawer(new DebugDrawer()),
-      level(4, -10, -10, 10, 10, 4, 4) ,
-solidsphere(2,12,14)
-{
+      level(4, -10, -10, 10, 10, 4, 4),
+      solidsphere(2, 12, 14) {
   world->setGravity(btVector3(0, 10, 0));
   debugdrawer->setDebugMode(0);
   world->setDebugDrawer(debugdrawer.get());
-
 }
 
-void Bullet::AddObject(
-                       btCollisionShape *pShape, float mass,
+void Bullet::AddObject(btCollisionShape *pShape, float mass,
                        const btVector3 &color, const btVector3 &initialPosition,
                        const btQuaternion &initialRotation, float speed,
                        const btVector3 &direction) {
-    std::function<void()> drawfunction;
-    switch(shapetype){
+  std::function<void()> drawfunction;
+  switch (shapetype) {
     case ShapeType::LEVEL:
-        drawfunction = [&]() { level.DrawLevel(); };
-                break;
+      drawfunction = [&]() { level.DrawLevel(); };
+      break;
     case ShapeType::SPHERE:
-        drawfunction = [&]() { solidsphere.draw(0,0,0);  };
-        pShape=new btSphereShape(2) ;
-                break;
+      drawfunction = [&]() { solidsphere.draw(0, 0, 0); };
+      pShape = new btSphereShape(2);
+      break;
     case ShapeType::CUBE:
-        drawfunction = []() { glutSolidCube(4);  };
-        pShape=new btBoxShape(btVector3(2, 2, 2));
-                break;
+      drawfunction = []() { glutSolidCube(4); };
+      pShape = new btBoxShape(btVector3(2, 2, 2));
+      break;
     case ShapeType::CONE:
-        drawfunction = []() { glutSolidCone(2,2, 20, 20);  };
-        pShape=new btConeShape(2, 2 );
-                break;
+      drawfunction = []() { glutSolidCone(2, 2, 20, 20); };
+      pShape = new btConeShape(2, 2);
+      break;
     case ShapeType::TEAPOT:
-        drawfunction = []() { glutSolidTeapot(2);  };
-        pShape=new btSphereShape(2) ;
-                break;
-    }
+      drawfunction = []() { glutSolidTeapot(2); };
+      pShape = new btSphereShape(2);
+      break;
+  }
 
   std::unique_ptr<GameObject> temp(new GameObject(
       drawfunction, pShape, mass, color, initialPosition, initialRotation));
@@ -93,15 +89,12 @@ void Bullet::AddLevel() {
   }
   btBvhTriangleMeshShape *convexhullshape =
       new btBvhTriangleMeshShape(mesh, true);
-shapetype = ShapeType::LEVEL;
-  AddObject( convexhullshape, 0,
-            btVector3(0.0f, 0.0f, 0.0f), btVector3(0.0f, 0.0f, 0.0f),
-            btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 0.0f,
-            btVector3(0.0f, 0.0f, 0.0f));
-shapetype = ShapeType::SPHERE;
+  shapetype = ShapeType::LEVEL;
+  AddObject(convexhullshape, 0, btVector3(0.0f, 0.0f, 0.0f),
+            btVector3(0.0f, 0.0f, 0.0f), btQuaternion(1.0f, 0.0f, 0.0f, 0.0f),
+            0.0f, btVector3(0.0f, 0.0f, 0.0f));
+  shapetype = ShapeType::SPHERE;
   AddObject(
-              nullptr,
-      1, btVector3(0.2f, 0.6f, 0.6f), btVector3(0.0f, -100.0f, 0.0f),
+      nullptr, 1, btVector3(0.2f, 0.6f, 0.6f), btVector3(0.0f, -100.0f, 0.0f),
       btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 0.0f, btVector3(0.0f, 0.0f, 0.0f));
-  }
-
+}

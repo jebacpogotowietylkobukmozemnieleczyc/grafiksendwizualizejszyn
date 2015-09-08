@@ -5,54 +5,37 @@
 
 #include <functional>
 
-class GameObject
-{
+class GameObject {
 public:
-    GameObject(std::function<void()> drawfunction,btCollisionShape* pShape, float mass, const btVector3 &color,
-			const btVector3 &initialPosition = btVector3(0, 0, 0),
-            const btQuaternion &initialRotation = btQuaternion(1, 0, 0, 0));
-	~GameObject();
+  GameObject(std::function<void()> drawfunction, btCollisionShape* pShape,
+             float mass, const btVector3& color,
+             const btVector3& initialPosition = btVector3(0, 0, 0),
+             const btQuaternion& initialRotation = btQuaternion(1, 0, 0, 0));
+  ~GameObject();
 
-	btCollisionShape* GetShape()
-	{
-		return m_pShape;
-	}
+  btCollisionShape* GetShape() { return m_pShape; }
 
-	btRigidBody* GetRigidBody()
-	{
-		return m_pBody;
-	}
+  btRigidBody* GetRigidBody() { return m_pBody; }
 
-	btMotionState* GetMotionState()
-	{
-		return m_pMotionState;
-	}
+  btMotionState* GetMotionState() { return m_pMotionState; }
 
-    void GetTransform(btTransform& trans)
-	{
+  void GetTransform(btTransform& trans) {
 
     m_pBody->getMotionState()->getWorldTransform(trans);
-    }
+  }
 
-	btVector3 GetColor()
-	{
-		return m_color;
-	}
+  btVector3 GetColor() { return m_color; }
 
-	void SetColor(const btVector3 &color)
-	{
-		m_color = color;
-	}
+  void SetColor(const btVector3& color) { m_color = color; }
 
-void DrawShape(){
-    drawfunction();
-}
+  void DrawShape() { drawfunction(); }
+
 protected:
-std::function<void()> drawfunction;
-    btCollisionShape* m_pShape;
-	btRigidBody* m_pBody;
-    btDefaultMotionState* m_pMotionState;
-	btVector3 m_color;
-    btTriangleMesh * mesh;
+  std::function<void()> drawfunction;
+  btCollisionShape* m_pShape;
+  btRigidBody* m_pBody;
+  btDefaultMotionState* m_pMotionState;
+  btVector3 m_color;
+  btTriangleMesh* mesh;
 };
 #endif

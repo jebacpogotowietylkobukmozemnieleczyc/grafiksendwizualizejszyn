@@ -19,16 +19,14 @@ static void KeySpecialUpCallback(int c, int x, int y) {
 }
 
 static void MouseFuncCallback(int button, int state, int x, int y) {
-  app->MouseFunc(button,state, x, y);
+  app->MouseFunc(button, state, x, y);
 }
-static void MotionFuncCallback( int x, int y) {
-  app->MotionFunc( x, y);
-}
-App::App(int* argc, char** argv):width(800),height(800) {
+static void MotionFuncCallback(int x, int y) { app->MotionFunc(x, y); }
+App::App(int* argc, char** argv) : width(800), height(800) {
 
   glutInit(argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowSize(width ,height);
+  glutInitWindowSize(width, height);
   glutInitWindowPosition(0, 0);
   glutCreateWindow("Program OpenGL");
   glutDisplayFunc(DisplayFrameCallback);
@@ -44,22 +42,16 @@ App::App(int* argc, char** argv):width(800),height(800) {
   glutSetCursor(GLUT_CURSOR_NONE);
   glutPassiveMotionFunc(MotionFuncCallback);
 
+  GLfloat ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+  GLfloat diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  GLfloat specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
+  glMaterialfv(GL_LIGHT0, GL_AMBIENT, ambient);
+  glMaterialfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+  glMaterialfv(GL_LIGHT0, GL_SPECULAR, specular);
+  glMateriali(GL_FRONT, GL_SHININESS, 50);
 
-    GLfloat ambient[] =
-    { 0.2f, 0.2f, 0.2f, 1.0f };
-    GLfloat diffuse[] =
-    { 1.0f, 1.0f, 1.0f, 1.0f };
-    GLfloat specular[] =
-    { 1.0f, 1.0f, 1.0f, 1.0f };
-
-
-    glMaterialfv(GL_LIGHT0, GL_AMBIENT, ambient);
-    glMaterialfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-    glMaterialfv(GL_LIGHT0, GL_SPECULAR, specular);
-    glMateriali(GL_FRONT, GL_SHININESS, 50);
-
-    glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHTING);
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);
@@ -69,8 +61,8 @@ App::App(int* argc, char** argv):width(800),height(800) {
 
   bullet.AddLevel();
 
-  LoadTexture(0,"bricks.bmp");
-  LoadTexture(1,"ntex.bmp");
+  LoadTexture(0, "bricks.bmp");
+  LoadTexture(1, "ntex.bmp");
 }
 
 void App::DisplayFrame(void) {
@@ -89,41 +81,35 @@ void App::DisplayFrame(void) {
   glMatrixMode(GL_MODELVIEW);
 
   M = glm::mat4(1.0f);
-  glLoadMatrixf(glm::value_ptr(V ));
-  float lightPos[]={0,-200,0,1};
-  GLfloat ambient[] =
-  { 0.1f, 0.1f, 0.1f, 1.0f };
-  GLfloat diffuse[] =
-  { 1.0f, 1.0f, 1.0f, 1.0f };
-  GLfloat specular[] =
-  { 1.0f, 1.0f, 1.0f, 1.0f };
+  glLoadMatrixf(glm::value_ptr(V));
+  float lightPos[] = { 0, -200, 0, 1 };
+  GLfloat ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+  GLfloat diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  GLfloat specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
   glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-  glLightfv(GL_LIGHT0,GL_POSITION,lightPos);
+  glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-  GLfloat ambient2[] =
-  { 0.0f, 0.0f, 0.1f, 1.0f };
-  GLfloat diffuse2[] =
-  { 0.0f, 0.0f, 1.0f, 1.0f };
-  GLfloat specular2[] =
-  { 0.0f, 0.0f, 1.0f, 1.0f };
-  float lightPos2[]={-20,-50,0,1};
+  GLfloat ambient2[] = { 0.0f, 0.0f, 0.1f, 1.0f };
+  GLfloat diffuse2[] = { 0.0f, 0.0f, 1.0f, 1.0f };
+  GLfloat specular2[] = { 0.0f, 0.0f, 1.0f, 1.0f };
+  float lightPos2[] = { -20, -50, 0, 1 };
   glLightfv(GL_LIGHT1, GL_AMBIENT, ambient2);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse2);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, specular2);
-    glLightfv(GL_LIGHT1,GL_POSITION,lightPos2);
- // static float staticx =0;
-//  M=glm::rotate(M,staticx+=0.01,glm::vec3(1.0f,0.0f,1.0f));
-  glLoadMatrixf(glm::value_ptr(V*M));
- // bullet.getSolidSphere().draw(0,0,-10);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse2);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, specular2);
+  glLightfv(GL_LIGHT1, GL_POSITION, lightPos2);
+  // static float staticx =0;
+  //  M=glm::rotate(M,staticx+=0.01,glm::vec3(1.0f,0.0f,1.0f));
+  glLoadMatrixf(glm::value_ptr(V * M));
+  // bullet.getSolidSphere().draw(0,0,-10);
   bullet.getWorld()->debugDrawWorld();
-  int texturenr =0;
-  for (auto it = bullet.getGameObject().begin(); it != bullet.getGameObject().end();
-       ++it) {
+  int texturenr = 0;
+  for (auto it = bullet.getGameObject().begin();
+       it != bullet.getGameObject().end(); ++it) {
 
-      texturenr = texturenr==1 ? 0 : 1;
-    glBindTexture(GL_TEXTURE_2D,texture[texturenr]);
+    texturenr = texturenr == 1 ? 0 : 1;
+    glBindTexture(GL_TEXTURE_2D, texture[texturenr]);
     btTransform trans;
     (*it)->GetTransform(trans);
     M = glm::mat4(1.0f);
@@ -169,14 +155,15 @@ void App::NextFrame(void) {
 
   glutPostRedisplay();
 }
-int App::LoadTexture(int nr,std::string filename)
-{
-    texture[nr] = SOIL_load_OGL_texture(filename.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-    if(texture[nr] == 0) return false;
-    glBindTexture(GL_TEXTURE_2D, texture[nr]);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    return true;
+int App::LoadTexture(int nr, std::string filename) {
+  texture[nr] = SOIL_load_OGL_texture(filename.c_str(), SOIL_LOAD_AUTO,
+                                      SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+  if (texture[nr] == 0)
+    return false;
+  glBindTexture(GL_TEXTURE_2D, texture[nr]);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  return true;
 }
 void App::KeyDown(unsigned char c, int x, int y) {
   switch (c) {
@@ -241,36 +228,34 @@ void App::KeyUp(unsigned char c, int x, int y) {
           btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 200,
           btVector3(cameratarget.x, cameratarget.y, cameratarget.z));
       break;
-  case 'f':
-      if(fullscreen==false){
-         width= glutGet(GLUT_SCREEN_WIDTH);
-         height= glutGet(GLUT_SCREEN_HEIGHT);
-  glutPositionWindow(0,0);
-  glutReshapeWindow(width, height);
-  glutFullScreen();
-fullscreen=true;
+    case 'f':
+      if (fullscreen == false) {
+        width = glutGet(GLUT_SCREEN_WIDTH);
+        height = glutGet(GLUT_SCREEN_HEIGHT);
+        glutPositionWindow(0, 0);
+        glutReshapeWindow(width, height);
+        glutFullScreen();
+        fullscreen = true;
+      } else {
+        width = 800;
+        height = 800;
+        glutPositionWindow(0, 0);
+        glutReshapeWindow(width, height);
+        fullscreen = false;
       }
-      else{
-width =800;
-height = 800;
-  glutPositionWindow(0,0);
-  glutReshapeWindow(width, height);
-  fullscreen=false;
-      }
       break;
-  case 'b':
+    case 'b':
 
-  bullet.getDebugDrawer()->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe);
+      bullet.getDebugDrawer()->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe);
       break;
-  case 'n':
+    case 'n':
 
-  bullet.getDebugDrawer()->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb);
+      bullet.getDebugDrawer()->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb);
       break;
-  case 'm':
+    case 'm':
 
-  bullet.getLevel().ToggleDebug();
+      bullet.getLevel().ToggleDebug();
       break;
-
   }
 }
 void App::KeySpecialUp(int c, int x, int y) {
@@ -302,61 +287,52 @@ void App::KeySpecialUp(int c, int x, int y) {
   }
 }
 
-void App::MouseFunc(int button, int state, int x, int y)
-{
+void App::MouseFunc(int button, int state, int x, int y) {
 
-switch (button)
-{
+  switch (button) {
     case GLUT_LEFT_BUTTON:
 
-        if(state == GLUT_DOWN)
-        {
+      if (state == GLUT_DOWN) {
 
-      bullet.AddObject(
+        bullet.AddObject(
 
-          nullptr, 1, btVector3(0.2f, 0.6f, 0.6f),
-          btVector3(cameraposition.x, cameraposition.y, cameraposition.z),
-          btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 50,
-          btVector3(cameratarget.x, cameratarget.y, cameratarget.z));
-
-
-        }
-    break;
+            nullptr, 1, btVector3(0.2f, 0.6f, 0.6f),
+            btVector3(cameraposition.x, cameraposition.y, cameraposition.z),
+            btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 50,
+            btVector3(cameratarget.x, cameratarget.y, cameratarget.z));
+      }
+      break;
     case GLUT_RIGHT_BUTTON:
 
-        if(state == GLUT_DOWN)
-        {
+      if (state == GLUT_DOWN) {
 
-      bullet.AddObject(
+        bullet.AddObject(
 
-          nullptr, 1, btVector3(0.2f, 0.6f, 0.6f),
-          btVector3(cameraposition.x, cameraposition.y, cameraposition.z),
-          btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 200,
-          btVector3(cameratarget.x, cameratarget.y, cameratarget.z));
-
-        }
-    break;
-    }
+            nullptr, 1, btVector3(0.2f, 0.6f, 0.6f),
+            btVector3(cameraposition.x, cameraposition.y, cameraposition.z),
+            btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 200,
+            btVector3(cameratarget.x, cameratarget.y, cameratarget.z));
+      }
+      break;
+  }
 }
 
-void App::ResetPointer(){
-   glutWarpPointer(width/2,height/2);
-   mousex=width/2;
-   mousey=height/2;
-
+void App::ResetPointer() {
+  glutWarpPointer(width / 2, height / 2);
+  mousex = width / 2;
+  mousey = height / 2;
 }
 
+void App::MotionFunc(int x, int y) {
 
- void App::MotionFunc( int x, int y){
+  yaw += (mousex - x) * mousesensivity * 0.0005;
+  pitch += (y - mousey) * mousesensivity * 0.0005;
+  if (fabs(width / 2 - x) > 25 || fabs(height / 2 - y) > 25) {
+    ResetPointer();
+  }
+}
 
-   yaw+=(mousex-x)*mousesensivity*0.0005;
-   pitch +=(y-mousey)*mousesensivity*0.0005;
-   if (fabs(width/2 - x) > 25 || fabs(height/2 - y) > 25) {
-           ResetPointer();
-       }
- }
-
-
-
-App::~App() { glDeleteTextures(1, &texture[0]);
-              glDeleteTextures(1, &texture[2]); }
+App::~App() {
+  glDeleteTextures(1, &texture[0]);
+  glDeleteTextures(1, &texture[2]);
+}
