@@ -51,13 +51,13 @@ App::App(int* argc, char** argv) : width(800), height(800) {
   glMaterialfv(GL_LIGHT0, GL_SPECULAR, specular);
   glMateriali(GL_FRONT, GL_SHININESS, 50);
 
+  glEnable(GL_NORMALIZE);
   glEnable(GL_LIGHTING);
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHT1);
-  glEnable(GL_NORMALIZE);
   glShadeModel(GL_SMOOTH);
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_DEPTH_TEST);
 
   bullet.AddLevel();
 
@@ -70,11 +70,11 @@ void App::DisplayFrame(void) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   bullet.getWorld()->stepSimulation(1);
+  glm::mat4 P = glm::perspective(50.0f,width/ static_cast<float>(height), 1.0f, 500.0f);
   glm::mat4 M;
   glm::mat4 V = glm::lookAt(cameraposition, cameraposition + cameratarget,
                             glm::vec3(0.0f, 1.0f, 0.0f));
 
-  glm::mat4 P = glm::perspective(50.0f, 1.0f, 1.0f, 500.0f);
 
   glMatrixMode(GL_PROJECTION);
   glLoadMatrixf(glm::value_ptr(P));

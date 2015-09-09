@@ -42,7 +42,7 @@ private:
   int height;
   int width;
   Bullet bullet;
-  GLuint texture[1];
+  GLuint texture[2];
 
   glm::vec3 cameraposition = glm::vec3(0.0f, 0.0f, -25.0f);
   glm::vec3 cameratarget = glm::vec3(1.0f, 1.0f, 1.0f);

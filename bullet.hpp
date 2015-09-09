@@ -2,9 +2,9 @@
 #define BULLET_HPP
 #include <memory>
 #include <btBulletDynamicsCommon.h>
-#include <DebugDrawer.h>
+#include <debugdrawer.h>
 #include <GL/glut.h>
-#include "GameObject.h"
+#include "gameobject.h"
 #include "level.hpp"
 #include "solidsphere.hpp"
 enum class ShapeType { LEVEL, SPHERE, CUBE, CONE, TEAPOT };
