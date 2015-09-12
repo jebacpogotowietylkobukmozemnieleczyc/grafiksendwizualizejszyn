@@ -22,7 +22,7 @@ static void MouseFuncCallback(int button, int state, int x, int y) {
   app->MouseFunc(button, state, x, y);
 }
 static void MotionFuncCallback(int x, int y) { app->MotionFunc(x, y); }
-App::App(int* argc, char** argv) : width(800), height(800) {
+App::App(int* argc, char** argv) : width(800), height(800),bullet(shadow) {
 
   glutInit(argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -51,14 +51,17 @@ App::App(int* argc, char** argv) : width(800), height(800) {
   glMaterialfv(GL_LIGHT0, GL_SPECULAR, specular);
   glMateriali(GL_FRONT, GL_SHININESS, 50);
 
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable( GL_BLEND );
+
   glEnable(GL_NORMALIZE);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHT1);
   glShadeModel(GL_SMOOTH);
-  glEnable(GL_TEXTURE_2D);
+ // glEnable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
-
+glEnable(GL_COLOR_MATERIAL);
   bullet.AddLevel();
 
   LoadTexture(0, "bricks.bmp");
@@ -67,7 +70,7 @@ App::App(int* argc, char** argv) : width(800), height(800) {
 
 void App::DisplayFrame(void) {
   glClearColor(0, 0, 0, 1);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
   bullet.getWorld()->stepSimulation(1);
   glm::mat4 P = glm::perspective(50.0f,width/ static_cast<float>(height), 1.0f, 500.0f);
@@ -102,6 +105,14 @@ void App::DisplayFrame(void) {
   // static float staticx =0;
   //  M=glm::rotate(M,staticx+=0.01,glm::vec3(1.0f,0.0f,1.0f));
   glLoadMatrixf(glm::value_ptr(V * M));
+  //bullet.getSolidSphere().draw(lightPos[0],lightPos[1],lightPos[2]);
+  //glColor4f(0,1,0,0.1);
+  //glBegin(GL_TRIANGLES);
+  //glVertex3f(-10,-10,0);
+  //glVertex3f(-10,10,0);
+  //glVertex3f(10,10,0);
+  //glEnd();
+  //glColor4f(0,0,1,1);
   // bullet.getSolidSphere().draw(0,0,-10);
   bullet.getWorld()->debugDrawWorld();
   int texturenr = 0;
@@ -126,9 +137,10 @@ void App::DisplayFrame(void) {
     glLoadMatrixf(glm::value_ptr(V * M));
 
     (*it)->DrawShape();
+  if(shadow.empty()!=true)DrawShadow();
   }
-
   glutSwapBuffers();
+
 }
 
 void App::NextFrame(void) {
@@ -165,6 +177,66 @@ int App::LoadTexture(int nr, std::string filename) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   return true;
 }
+void App::DrawShadow(){
+  glEnable(GL_CULL_FACE);
+    glDepthMask(GL_FALSE);
+
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
+
+  glFrontFace(GL_CCW);
+glColor4d(1,0,0,1);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+    CastShadow();
+
+
+  glFrontFace(GL_CW);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
+glColor4d(0,0,0,0);
+    CastShadow();
+    shadow.clear();
+
+
+glDisable(GL_CULL_FACE);
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+    glStencilFunc( GL_NOTEQUAL, 0, 0xffffffff );
+    glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+glColor4d(0,1,0,0.5);
+
+std::array<GLfloat,12> shadowvec{
+-0.5,-0.5,-1,
+0.5,-0.5,-1,
+0.5,0.5,-1,
+-0.5,0.5,-1};
+   glEnableClientState( GL_VERTEX_ARRAY );
+   glVertexPointer( 3, GL_FLOAT, 0, shadowvec.data());
+   glDrawArrays(GL_QUADS,0, 4);
+   glDisableClientState( GL_VERTEX_ARRAY );
+glColor4d(1,1,1,1);
+    glDisable(GL_STENCIL_TEST);
+    glDepthMask(GL_TRUE);
+
+}
+
+void App::CastShadow(){
+   glm::vec3 light(0,200,0);
+        for(auto it= shadow.begin()+3;it!=shadow.end();it+=3){
+
+
+std::array<GLfloat,12> shadowvec{
+    *(it-3),*(it-2),*(it-1),
+    *(it),*(it+1),*(it+2),
+    *(it)-light.x,*(it+1)-light.y,*(it+2)-light.z,
+    *(it-3)-light.x,*(it-2)-light.y,*(it-1)-light.z};
+
+   glEnableClientState( GL_VERTEX_ARRAY );
+   glVertexPointer( 3, GL_FLOAT, 0, shadowvec.data());
+   glDrawArrays(GL_QUADS,0, 4);
+   glDisableClientState( GL_VERTEX_ARRAY );
+    }
+}
+
 void App::KeyDown(unsigned char c, int x, int y) {
   switch (c) {
     case 'w':

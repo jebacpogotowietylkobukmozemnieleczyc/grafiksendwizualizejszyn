@@ -78,7 +78,7 @@ Level::Level(int t, float startx, float startz, float endx, float endz,
     vecnorm.push_back(norm.y);
     vecnorm.push_back(norm.z);
     ++x;
-  }
+ }
 }
 
 void Level::DrawLevel() {

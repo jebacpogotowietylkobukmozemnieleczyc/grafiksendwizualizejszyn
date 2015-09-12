@@ -1,7 +1,7 @@
 #include "bullet.hpp"
 #include "iostream"
 
-Bullet::Bullet()
+Bullet::Bullet(std::vector<GLfloat>& shadow)
     : collisionconfiguration(new btDefaultCollisionConfiguration()),
       dispatcher(new btCollisionDispatcher(collisionconfiguration.get())),
       broadphase(new btDbvtBroadphase()),
@@ -11,7 +11,7 @@ Bullet::Bullet()
                                         collisionconfiguration.get())),
       debugdrawer(new DebugDrawer()),
       level(4, -10, -10, 10, 10, 4, 4),
-      solidsphere(2, 12, 14) {
+      solidsphere(shadow,2, 10, 10) {
   world->setGravity(btVector3(0, 10, 0));
   debugdrawer->setDebugMode(0);
   world->setDebugDrawer(debugdrawer.get());

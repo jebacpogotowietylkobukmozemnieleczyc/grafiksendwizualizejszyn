@@ -24,7 +24,10 @@ public:
   void MouseFunc(int button, int state, int x, int y);
   void MotionFunc(int x, int y);
   void ResetPointer();
+  void CastShadow();
+  void DrawShadow();
   int LoadTexture(int id, std::string filename);
+
 
 private:
   float activatedpitch = 0;
@@ -43,7 +46,7 @@ private:
   int width;
   Bullet bullet;
   GLuint texture[2];
-
+std::vector<GLfloat> shadow;
   glm::vec3 cameraposition = glm::vec3(0.0f, 0.0f, -25.0f);
   glm::vec3 cameratarget = glm::vec3(1.0f, 1.0f, 1.0f);
   glm::vec3 cameraup = glm::vec3(0.0f, 1.0f, 0.0f);

@@ -10,11 +10,11 @@
 enum class ShapeType { LEVEL, SPHERE, CUBE, CONE, TEAPOT };
 class Bullet {
 public:
-  Bullet();
+  Bullet(std::vector<GLfloat>& shadow);
 
   const auto getWorld() const { return world; }
   auto& getLevel() { return level; }
-  const auto& getSolidSphere() const { return solidsphere; }
+   auto& getSolidSphere()  { return solidsphere; }
   const auto& getGameObject() const { return gameobject; }
   const auto& getDebugDrawer() const { return debugdrawer; }
   void setShapetype(ShapeType nshapetype) { shapetype = nshapetype; }
