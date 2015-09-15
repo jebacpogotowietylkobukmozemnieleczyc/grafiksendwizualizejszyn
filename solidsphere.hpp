@@ -32,6 +32,12 @@ protected:
   unsigned int sectors;
 
 public:
+  const auto& getVertices () const {return vertices;}
+  const auto& getSectors () const {return sectors;}
+  const auto& getRadius () const {return radius;}
+  //
+  const auto& getIndex () const {return indices;}
+
   SolidSphere(std::vector<GLfloat>& shadow,float radius, unsigned int rings, unsigned int sectors) :
       shadow(shadow),
  radius(radius),
@@ -97,33 +103,6 @@ public:
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    std::vector<bool> visibleface;
-   glm::vec3 light(0,-200,0);
-for(auto it =vertices.begin();it!=vertices.end();it+=3){
-
-       glm::vec3 pos(*(it),*(it+1),*(it+2));
-       glm::vec3 lightvec= light - pos;
-       if(glm::dot(lightvec,pos/radius) <0){
-           visibleface.push_back(true);
-       }
-       else{
-           visibleface.push_back(false);
-       }
-}
-
-    {
-    int a =0;
-
-        auto it = vertices.begin();
-        CircularAccess ca(visibleface);
-        for(int i = 0; i<visibleface.size();++i,it+=3){
-           if(ca[i-1]!=ca[i] ||ca[i+1]!=ca[i] ||ca[i-sectors]!=ca[i] ||ca[i+sectors]!=ca[i] ){
-              shadow.push_back(*(it));
-              shadow.push_back(*(it+1));
-              shadow.push_back(*(it+2));
-    }
-        }
-}
 /*
 for(auto it = shadowvec.begin()+3;it!=shadowvec.end();it+=3){
 std::array<GLfloat,12> shadow{

@@ -44,6 +44,7 @@ private:
   bool fullscreen = false;
   int height;
   int width;
+  static constexpr float INFINITE = 100;
   Bullet bullet;
   GLuint texture[2];
 std::vector<GLfloat> shadow;
