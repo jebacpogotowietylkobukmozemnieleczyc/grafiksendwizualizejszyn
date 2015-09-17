@@ -23,7 +23,7 @@ static void MouseFuncCallback(int button, int state, int x, int y) {
 }
 static void MotionFuncCallback(int x, int y) { app->MotionFunc(x, y); }
 App::App(int* argc, char** argv) : width(800), height(800), bullet(shadow) {
- glutInit(argc, argv);
+  glutInit(argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(width, height);
   glutInitWindowPosition(0, 0);
@@ -126,32 +126,35 @@ void App::DisplayFrame(void) {
     glm::vec3 translate =
         glm::vec3(trans.getOrigin().getX(), trans.getOrigin().getY(),
                   trans.getOrigin().getZ());
-    M = glm::translate(M, translate);
+    glm::mat4 T = glm::translate(M, translate);
     btMatrix3x3 rotMatrix = trans.getBasis();
     float z, y, x;
     rotMatrix.getEulerZYX(z, y, x);
-    M = glm::rotate(M, x, glm::vec3(1.0f, 0.0f, 0.0f));
+    // rotMatrix.getEulerYPR(z, y, x);
+    M = glm::rotate(T, x, glm::vec3(1.0f, 0.0f, 0.0f));
     M = glm::rotate(M, y, glm::vec3(0.0f, 1.0f, 0.0f));
     M = glm::rotate(M, z, glm::vec3(0.0f, 0.0f, 1.0f));
 
     glLoadMatrixf(glm::value_ptr(V * M));
-     (*it)->DrawShape();
+    (*it)->DrawShape();
+    if (shadowmode == false)
+      continue;
     if (it == bullet.getGameObject().begin())
       continue;
-    // shadw
 
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(glm::value_ptr(V));
     std::vector<bool> visibleface;
-    glm::vec3 light( 0,-200, 0);
+    glm::vec3 light(0, -200, 0);
     for (auto it = bullet.getSolidSphere().getVertices().begin();
          it != bullet.getSolidSphere().getVertices().end(); it += 3) {
 
       glm::vec4 pos4(*(it), *(it + 1), *(it + 2), 1);
-      pos4 = M * pos4;
+      pos4 = T * pos4;
       glm::vec3 pos3(pos4.x, pos4.y, pos4.z);
       glm::vec3 lightvec = light - pos3;
-      if (glm::dot(lightvec, (pos3-translate) / bullet.getSolidSphere().getRadius()) > 0) {
+      if (glm::dot(lightvec, (pos3 - translate) /
+                                 bullet.getSolidSphere().getRadius()) > 0) {
         visibleface.push_back(true);
       } else {
         visibleface.push_back(false);
@@ -163,73 +166,27 @@ void App::DisplayFrame(void) {
       CircularAccess ca(visibleface);
       for (int i = 0; it != bullet.getSolidSphere().getVertices().end();
            ++i, it += 3) {
-         if(ca[i-1]!=ca[i] /*||ca[i+1]!=ca[i]*/
-         ||ca[i-bullet.getSolidSphere().getSectors()]!=ca[i]
-        /*||ca[i+bullet.getSolidSphere().getSectors()]!=ca[i]*/ ){
-          //if(ca[i]==true){
-        glm::vec4 pos4(*(it), *(it + 1), *(it + 2), 1);
-        pos4 = M * pos4;
-        glm::vec4 poz4(*(it + 3), *(it + 4), *(it + 5), 1);
-        poz4 = M * poz4;
-        shadow.push_back(pos4.x);
-        shadow.push_back(pos4.y);
-        shadow.push_back(pos4.z);
-        /*
-        if (shadow.size() >= 6) {
-          glColor4d(1, 0, 0, 1);
-          glBegin(GL_LINES);
-          glVertex3f(shadow[0], shadow[1], shadow[2]);
-          glVertex3f(shadow[3], shadow[4], shadow[5]);
-          glEnd();
-          glColor4d(1, 1, 1, 1);
-          shadow.erase(shadow.begin(), shadow.begin() + 3);
-        }*/
+        if (ca[i - 1] != ca[i] /*|ca[i+1]!=ca[i]*/
+            ||
+            ca[i - bullet.getSolidSphere().getSectors()] != ca[i]
+                /*||ca[i+bullet.getSolidSphere().getSectors()]!=ca[i]*/) {
+          // if(ca[i]==true){
+          glm::vec4 pos4(*(it), *(it + 1), *(it + 2), 1);
+          pos4 = T * pos4;
+          shadow.push_back(pos4.x);
+          shadow.push_back(pos4.y);
+          shadow.push_back(pos4.z);
         }
       }
       shadow.push_back(shadow[0]);
       shadow.push_back(shadow[1]);
       shadow.push_back(shadow[2]);
-      /*
-glColor4d(1,0,0,1);
-  glEnableClientState(GL_VERTEX_ARRAY);
-
-  glVertexPointer(3, GL_FLOAT, 0,shadow.data());
-  glDrawElements(GL_QUADS, bullet.getSolidSphere().getIndex().size(),
-GL_UNSIGNED_SHORT, bullet.getSolidSphere().getIndex
-                 ().data());
-  glDisableClientState(GL_VERTEX_ARRAY);
-glColor4d(1,1,1,1);
-
-shadow.clear();
-*/
       visibleface.clear();
     }
-    /*
-    std::array<GLfloat,12> shadowvec{
-    -50.5,-20.5,-1,
-    50.5,-20.5,-1,
-    50.5,20.5,-1,
-    -50.5,20.5,-1};
-    for(int i = 0;i<12;i+=3){
-       glm::vec4 positon =
-    M*glm::vec4(shadowvec[i],shadowvec[i+1],shadowvec[i+2],1);
-      shadowvec[i]=positon.x;
-      shadowvec[i+1]=positon.y;
-      shadowvec[i+2]=positon.z;
-    }
-    glColor4d(1,0,0,1);
-       glEnableClientState( GL_VERTEX_ARRAY );
-       glVertexPointer( 3, GL_FLOAT, 0, shadow.data());
-       glDrawArrays(GL_QUADS,0, shadow.size());
-       glDisableClientState( GL_VERTEX_ARRAY );
-    glColor4d(1,1,1,1);
-  */
-    if (shadow.empty() != true){
+    if (shadow.empty() != true) {
       DrawShadow();
-
     }
   }
-  printf("o");
   glutSwapBuffers();
 }
 
@@ -275,23 +232,23 @@ void App::DrawShadow() {
   glEnable(GL_STENCIL_TEST);
   glStencilFunc(GL_ALWAYS, 1, 0xffffffff);
 
-  glFrontFace(GL_CCW);
-  glColor4d(0, 0, 0, 0);
+  glFrontFace(GL_CW);
+  glColor4d(0, 0, 1, 0);
   glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
   CastShadow();
 
-  glFrontFace(GL_CW);
+  glFrontFace(GL_CCW);
   glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
-  glColor4d(0, 0, 0, 0);
+  glColor4d(0, 1, 0, 0);
   CastShadow();
-          shadow.clear();
+  shadow.clear();
 
   glDisable(GL_CULL_FACE);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glStencilFunc(GL_NOTEQUAL, 0, 0xffffffff);
   glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-  glColor4d(0, 0, 0, 0.2);
+  glColor4d(1, 0, 0, 0.5);
 
   std::array<GLfloat, 12> shadowvec{ -0.5, -0.5, -1, 0.5,  -0.5, -1,
                                      0.5,  0.5,  -1, -0.5, 0.5,  -1 };
@@ -303,7 +260,6 @@ void App::DrawShadow() {
   glDisable(GL_STENCIL_TEST);
   glDepthMask(GL_TRUE);
   glDisable(GL_CULL_FACE);
-
 }
 
 void App::CastShadow() {
@@ -311,13 +267,15 @@ void App::CastShadow() {
   for (auto it = shadow.begin() + 3; it != shadow.end(); it += 3) {
 
     std::array<GLfloat, 12> shadowvec{
-      *(it - 3),           *(it - 2),           *(it - 1),
-      *(it),               *(it + 1),           *(it + 2),
-      *(it)+*(it)-light.x,       *(it + 1) +*(it + 1) - light.y, *(it + 2) +*(it + 2) - light.z,
-      *(it - 3)+ *(it - 3) - light.x, *(it - 2) +*(it - 2) - light.y, *(it - 1)+ *(it - 1) - light.z
+      *(it - 3),                       *(it - 2),
+      *(it - 1),                       *(it),
+      *(it + 1),                       *(it + 2),
+      *(it) + *(it)-light.x,           *(it + 1) + *(it + 1) - light.y,
+      *(it + 2) + *(it + 2) - light.z, *(it - 3) + *(it - 3) - light.x,
+      *(it - 2) + *(it - 2) - light.y, *(it - 1) + *(it - 1) - light.z
     };
 
-    //for(int i = 5;i<12;++i)shadowvec[i]*=INFINITE;
+    // for(int i = 5;i<12;++i)shadowvec[i]*=INFINITE;
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, shadowvec.data());
     glDrawArrays(GL_QUADS, 0, 4);
@@ -415,6 +373,9 @@ void App::KeyUp(unsigned char c, int x, int y) {
     case 'm':
 
       bullet.getLevel().ToggleDebug();
+      break;
+    case 'v':
+      shadowmode = shadowmode ? false : true;
       break;
   }
 }

@@ -10,8 +10,8 @@ Bullet::Bullet(std::vector<GLfloat>& shadow)
                                         solver.get(),
                                         collisionconfiguration.get())),
       debugdrawer(new DebugDrawer()),
-      level(4, -10, -10, 10, 10, 4, 4),
-      solidsphere(shadow,2, 20, 20) {
+      level(4, -20, -20, 20, 20, 8, 8),
+      solidsphere(shadow,2, 12 ,12) {
   world->setGravity(btVector3(0, 10, 0));
   debugdrawer->setDebugMode(0);
   world->setDebugDrawer(debugdrawer.get());
@@ -94,7 +94,7 @@ void Bullet::AddLevel() {
             btVector3(0.0f, 0.0f, 0.0f), btQuaternion(1.0f, 0.0f, 0.0f, 0.0f),
             0.0f, btVector3(0.0f, 0.0f, 0.0f));
   shapetype = ShapeType::SPHERE;
-//  AddObject(
- //     nullptr, 1, btVector3(0.2f, 0.6f, 0.6f), btVector3(0.0f, -100.0f, 0.0f),
-  //    btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 0.0f, btVector3(0.0f, 0.0f, 0.0f));
+  AddObject(
+      nullptr, 1, btVector3(0.2f, 0.6f, 0.6f), btVector3(0.0f, -100.0f, 0.0f),
+      btQuaternion(1.0f, 0.0f, 0.0f, 0.0f), 0.0f, btVector3(0.0f, 0.0f, 0.0f));
 }
