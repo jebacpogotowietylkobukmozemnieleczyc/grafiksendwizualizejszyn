@@ -23,7 +23,7 @@ static void MouseFuncCallback(int button, int state, int x, int y) {
 }
 static void MotionFuncCallback(int x, int y) { app->MotionFunc(x, y); }
 App::App(int* argc, char** argv) : width(800), height(800), bullet(shadow),
-lightpos({ 0, -200, 0, 1} ),lightpos2({ -20, -50, 0, 1 }){
+lightpos({ 0, -200, 0, 1} ),lightpos2({ 0, 50, 0, 1 }){
   glutInit(argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(width, height);
@@ -126,7 +126,7 @@ void App::DisplayFrame(void) {
     (*it)->DrawShape();
     if (shadowmode == false)
       continue;
-    for(lightindex=0;lightindex<1;++lightindex){
+    for(lightindex=0;lightindex<2;++lightindex){
     if (it == bullet.getGameObject().begin())
       continue;
 
