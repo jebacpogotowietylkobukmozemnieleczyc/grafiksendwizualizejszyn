@@ -22,7 +22,8 @@ static void MouseFuncCallback(int button, int state, int x, int y) {
   app->MouseFunc(button, state, x, y);
 }
 static void MotionFuncCallback(int x, int y) { app->MotionFunc(x, y); }
-App::App(int* argc, char** argv) : width(800), height(800), bullet(shadow) {
+App::App(int* argc, char** argv) : width(800), height(800), bullet(shadow),
+lightpos({ 0, -200, 0, 1} ),lightpos2({ -20, -50, 0, 1 }){
   glutInit(argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(width, height);
@@ -84,35 +85,22 @@ void App::DisplayFrame(void) {
 
   M = glm::mat4(1.0f);
   glLoadMatrixf(glm::value_ptr(V));
-  float lightPos[] = { 0, -200, 0, 1 };
   GLfloat ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
   GLfloat diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
   GLfloat specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
   glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-  glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+  glLightfv(GL_LIGHT0, GL_POSITION, lightpos.data());
 
   GLfloat ambient2[] = { 0.0f, 0.0f, 0.1f, 1.0f };
   GLfloat diffuse2[] = { 0.0f, 0.0f, 1.0f, 1.0f };
   GLfloat specular2[] = { 0.0f, 0.0f, 1.0f, 1.0f };
-  float lightPos2[] = { -20, -50, 0, 1 };
   glLightfv(GL_LIGHT1, GL_AMBIENT, ambient2);
   glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse2);
   glLightfv(GL_LIGHT1, GL_SPECULAR, specular2);
-  glLightfv(GL_LIGHT1, GL_POSITION, lightPos2);
-  // static float staticx =0;
-  //  M=glm::rotate(M,staticx+=0.01,glm::vec3(1.0f,0.0f,1.0f));
+  glLightfv(GL_LIGHT1, GL_POSITION, lightpos2.data());
   glLoadMatrixf(glm::value_ptr(V * M));
-  // bullet.getSolidSphere().draw(lightPos[0],lightPos[1],lightPos[2]);
-  // glColor4f(0,1,0,0.1);
-  // glBegin(GL_TRIANGLES);
-  // glVertex3f(-10,-10,0);
-  // glVertex3f(-10,10,0);
-  // glVertex3f(10,10,0);
-  // glEnd();
-  // glColor4f(0,0,1,1);
-  // bullet.getSolidSphere().draw(0,0,-10);
   bullet.getWorld()->debugDrawWorld();
   int texturenr = 0;
   for (auto it = bullet.getGameObject().begin();
@@ -130,7 +118,6 @@ void App::DisplayFrame(void) {
     btMatrix3x3 rotMatrix = trans.getBasis();
     float z, y, x;
     rotMatrix.getEulerZYX(z, y, x);
-    // rotMatrix.getEulerYPR(z, y, x);
     M = glm::rotate(T, x, glm::vec3(1.0f, 0.0f, 0.0f));
     M = glm::rotate(M, y, glm::vec3(0.0f, 1.0f, 0.0f));
     M = glm::rotate(M, z, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -139,13 +126,16 @@ void App::DisplayFrame(void) {
     (*it)->DrawShape();
     if (shadowmode == false)
       continue;
+    for(lightindex=0;lightindex<1;++lightindex){
     if (it == bullet.getGameObject().begin())
       continue;
 
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(glm::value_ptr(V));
     std::vector<bool> visibleface;
-    glm::vec3 light(0, -200, 0);
+    glm::vec3 light;
+    if(lightindex==0)light = glm::vec3 (lightpos[0],lightpos[1],lightpos[2] );
+    else light =glm::vec3 (lightpos2[0],lightpos2[1],lightpos2[2] );
     for (auto it = bullet.getSolidSphere().getVertices().begin();
          it != bullet.getSolidSphere().getVertices().end(); it += 3) {
 
@@ -187,7 +177,9 @@ void App::DisplayFrame(void) {
       DrawShadow();
     }
   }
+  }
   glutSwapBuffers();
+
 }
 
 void App::NextFrame(void) {
@@ -263,7 +255,9 @@ void App::DrawShadow() {
 }
 
 void App::CastShadow() {
-  glm::vec3 light(0, -200, 0);
+    glm::vec3 light;
+  if(lightindex==0) light=glm::vec3(lightpos[0], lightpos[1], lightpos[2]);
+  else  light= glm::vec3(lightpos2[0], lightpos2[1], lightpos2[2]);
   for (auto it = shadow.begin() + 3; it != shadow.end(); it += 3) {
 
     std::array<GLfloat, 12> shadowvec{
